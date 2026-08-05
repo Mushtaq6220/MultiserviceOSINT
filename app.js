@@ -287,47 +287,35 @@ async function doAadharLookup() {
   try {
     let data = null;
 
-    // Try Backend Proxy first
+    // Direct Vercel Endpoint 1
     try {
-      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
-      if (res.ok) {
-        data = await res.json();
-      }
-    } catch (e) {
-      data = null;
-    }
+      const url1 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
+      const res1 = await fetch(url1);
+      if (res1.ok) data = await res1.json();
+    } catch (e) {}
 
-    // Check if proxy returned valid records or error payload
-    let records = extractRecords(data && data.result);
-    if (records.length === 0 && data && data.data) records = extractRecords(data.data);
-    if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) records = [data];
-
-    // Direct Fallback 1: Vercel API with @AwesomFF
-    if (!data || records.length === 0 || data.status === 'error') {
+    // Direct Vercel Endpoint 2
+    if (!data || data.status === 'error' || !data.result) {
       try {
-        const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
-        const res = await fetch(fallbackUrl);
-        if (res.ok) {
-          data = await res.json();
-          records = extractRecords(data && data.result);
-          if (records.length === 0 && data && data.data) records = extractRecords(data.data);
-          if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) records = [data];
-        }
+        const url2 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+        const res2 = await fetch(url2);
+        if (res2.ok) data = await res2.json();
       } catch (e) {}
     }
 
-    // Direct Fallback 2: Vercel API with key SHURU_33
-    if (!data || records.length === 0 || data.status === 'error') {
+    // Proxy Endpoint Fallback
+    if (!data || data.status === 'error' || !data.result) {
       try {
-        const fallbackUrl2 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
-        const res2 = await fetch(fallbackUrl2);
-        if (res2.ok) {
-          data = await res2.json();
-          records = extractRecords(data && data.result);
-          if (records.length === 0 && data && data.data) records = extractRecords(data.data);
-          if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) records = [data];
-        }
+        const res3 = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
+        if (res3.ok) data = await res3.json();
       } catch (e) {}
+    }
+
+    let records = [];
+    if (data) {
+      if (data.result) records = extractRecords(data.result);
+      if (records.length === 0 && data.data) records = extractRecords(data.data);
+      if (records.length === 0 && (data.name || data.fname || data.aadhar)) records = [data];
     }
 
     if (!data || records.length === 0) {
@@ -366,8 +354,12 @@ function showAadharSuccess(data, searchedAadhar, records) {
   const successCard = document.getElementById('aadharSuccessCard');
   if (successCard) successCard.classList.remove('hidden');
 
-  const recs = records || extractRecords(data.result);
-  if (recs.length === 0) {
+  let recs = records;
+  if (!recs || recs.length === 0) {
+    recs = extractRecords(data.result || data.data || data);
+  }
+
+  if (!recs || recs.length === 0) {
     showAadharError(`No profile found for Aadhaar '${searchedAadhar}'.`);
     return;
   }
