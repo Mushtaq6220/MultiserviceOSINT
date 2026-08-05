@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfoCore — Intelligence & Utility Engine</title>
+  <meta name="description" content="InfoCore OSINT Suite — High-speed phone lookup, Aadhaar records, vehicle verification, and Instagram media downloader." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=3.9" />
+</head>
+<body>
+
+  <!-- Floating Glassmorphism Navigation Bar -->
+  <header class="navbar-wrapper">
+    <nav class="floating-navbar">
+      <a href="/" class="nav-brand">
+        <div class="nav-logo">
+          <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="32" cy="18" r="11" fill="#0080FF" />
+            <path d="M20 38C20 31.3726 25.3726 26 32 26C38.6274 26 44 31.3726 44 38V68C44 74.6274 38.6274 80 32 80C25.3726 80 20 74.6274 20 68V38Z" fill="#0080FF" />
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M38 48C38 35.8497 47.8497 26 60 26C72.1503 26 82 35.8497 82 48C82 60.1503 72.1503 70 60 70H54V80H60C77.6731 80 92 65.6731 92 48C92 30.3269 77.6731 16 60 16C42.3269 16 28 30.3269 28 48V54H38V48Z" fill="currentColor" />
+          </svg>
+        </div>
+        <span class="brand-title">Info<span class="brand-accent">Core</span></span>
+      </a>
+
+      <!-- Nav Links -->
+      <div class="nav-pill-menu" id="navMenu">
+        <a href="/phone" class="nav-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.81-1.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          Phone
+        </a>
+        <a href="/truecaller" class="nav-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+          Truecaller
+        </a>
+        <a href="/aadhar" class="nav-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
+          Aadhaar
+        </a>
+        <a href="/vehicle" class="nav-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          Vehicle
+        </a>
+        <a href="/insta" class="nav-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+          Insta Saver
+        </a>
+        <a href="/bomber" class="nav-pill">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          Bomber
+        </a>
+      </div>
+
+      <!-- Controls Right -->
+      <div class="nav-actions">
+        <button class="theme-toggle-btn" onclick="toggleTheme()" title="Toggle Light/Dark Mode">
+          <svg class="sun-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg class="moon-icon" width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+
+        <button class="mobile-menu-btn" onclick="toggleMobileMenu()" aria-label="Toggle Mobile Menu">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Mobile Navigation Sheet Overlay -->
+    <div class="mobile-nav-sheet" id="mobileSheet">
+      <div class="sheet-grid">
+        <a href="/phone" class="sheet-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.18 6.18l1.81-1.81a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+          <span>Phone Lookup</span>
+        </a>
+        <a href="/truecaller" class="sheet-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+          <span>Truecaller Info</span>
+        </a>
+        <a href="/aadhar" class="sheet-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/></svg>
+          <span>Aadhaar Info</span>
+        </a>
+        <a href="/vehicle" class="sheet-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+          <span>Vehicle Info</span>
+        </a>
+        <a href="/insta" class="sheet-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
+          <span>Insta Saver</span>
+        </a>
+        <a href="/bomber" class="sheet-item">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span>Bomber</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Wrapper -->
+  <main class="main-content">
+    <div class="content-container">
+
+      <!-- ===== LANDING HOME PANEL ===== -->
+      <section id="panelHome" class="tool-panel active">
+        
+        <!-- Clean Hero Section -->
+        <div class="clean-hero">
+          <div class="hero-badge">InfoCore Suite</div>
+          <h1 class="hero-title">Info<span class="brand-accent">Core</span></h1>
+          <p class="hero-subtitle">Your all-in-one OSINT & media hub.</p>
+        </div>
+
+        <!-- CONNECT / SOCIAL LINKS SECTION -->
+        <div class="connect-section">
+          <div class="connect-header">
+            <h3>Connect with Developer</h3>
+          </div>
+
+          <div class="connect-grid">
+            <!-- Telegram Card -->
+            <a href="https://t.me/AwesomFF" target="_blank" rel="noopener noreferrer" class="connect-card tg-card">
+              <div class="connect-icon-box tg-bg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69.01-.03.01-.14-.07-.2-.08-.06-.19-.04-.27-.02-.12.03-1.96 1.25-5.54 3.67-.52.36-1 .54-1.42.53-.47-.01-1.37-.26-2.03-.48-.82-.27-1.47-.42-1.42-.88.03-.24.37-.49 1.02-.75 4.01-1.74 6.69-2.89 8.04-3.45 3.82-1.59 4.61-1.87 5.13-1.88.11 0 .37.03.54.17.14.12.18.28.2.45-.02.07-.02.16-.04.24z"/>
+                </svg>
+              </div>
+              <div class="connect-info">
+                <span class="connect-platform">Telegram</span>
+                <span class="connect-action">Contact on Telegram</span>
+              </div>
+              <div class="connect-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+
+            <!-- Discord Card -->
+            <a href="https://discord.com/users/thsmartz0" target="_blank" rel="noopener noreferrer" class="connect-card discord-card">
+              <div class="connect-icon-box discord-bg">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+              </div>
+              <div class="connect-info">
+                <span class="connect-platform">Discord</span>
+                <span class="connect-action">Contact on Discord</span>
+              </div>
+              <div class="connect-arrow">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+              </div>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick Access Module Cards -->
+        <div class="tools-grid-title">Tools & Utilities</div>
+        <div class="hacker-grid">
+          <a href="/phone" class="hacker-card">
+            <div class="hacker-card-icon">📱</div>
+            <div class="hacker-card-title">Phone Lookup</div>
+            <div class="hacker-card-desc">Search any mobile number to view owner name, carrier circle, address, and alternate contacts.</div>
+            <div class="hacker-card-btn">
+              <span>OPEN TOOL</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+
+          <a href="/truecaller" class="hacker-card">
+            <div class="hacker-card-icon">👤</div>
+            <div class="hacker-card-title">Truecaller Info</div>
+            <div class="hacker-card-desc">Identify callers, carrier info, spam reports, and profile records using Truecaller database.</div>
+            <div class="hacker-card-btn">
+              <span>OPEN TOOL</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+
+          <a href="/aadhar" class="hacker-card">
+            <div class="hacker-card-icon">🆔</div>
+            <div class="hacker-card-title">Aadhaar Info</div>
+            <div class="hacker-card-desc">Look up Aadhaar numbers to find linked profiles, father/spouse name, and location records.</div>
+            <div class="hacker-card-btn">
+              <span>OPEN TOOL</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+
+          <a href="/vehicle" class="hacker-card">
+            <div class="hacker-card-icon">🚗</div>
+            <div class="hacker-card-title">Vehicle RC Search</div>
+            <div class="hacker-card-desc">Check vehicle registration details, owner name, insurance validity, and RTO info.</div>
+            <div class="hacker-card-btn">
+              <span>OPEN TOOL</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+
+          <a href="/insta" class="hacker-card">
+            <div class="hacker-card-icon">⚡</div>
+            <div class="hacker-card-title">Instagram Downloader</div>
+            <div class="hacker-card-desc">Save public Instagram Reels and videos in 480p, 720p, or 1080p HD quality.</div>
+            <div class="hacker-card-btn">
+              <span>OPEN TOOL</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+
+          <a href="/bomber" class="hacker-card">
+            <div class="hacker-card-icon">💣</div>
+            <div class="hacker-card-title">OTP Bomber</div>
+            <div class="hacker-card-desc">Send high-speed OTP requests across 15+ SMS gateways.</div>
+            <div class="hacker-card-btn">
+              <span>OPEN TOOL</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+            </div>
+          </a>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <!-- Clean Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <span>InfoCore Intelligence Engine</span>
+      <span class="footer-divider">•</span>
+      <span>Made by <strong>Mushtaq</strong></span>
+    </div>
+  </footer>
+
+  <!-- First-Time Visitor Terms & Conditions Modal Overlay -->
+  <div class="modal-overlay hidden" id="termsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-row">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <h2>Terms & Conditions</h2>
+        </div>
+        <p class="modal-subtitle">Please review and accept our fair use policy to continue.</p>
+      </div>
+
+      <div class="terms-content-box">
+        <p>Welcome to <strong>InfoCore</strong>. By accessing and using this platform, you agree to comply with the following terms:</p>
+        <ul>
+          <li><strong>Public Data Aggregation:</strong> InfoCore aggregates publicly available OSINT data and official public registry endpoints for identity, vehicle RC, and media extraction.</li>
+          <li><strong>Lawful Use Only:</strong> You agree to use this platform strictly for lawful, ethical, and authorized research or personal utility purposes.</li>
+          <li><strong>No Automated Abuse:</strong> Scraping, bot spamming, or attempting to overload backend servers is strictly prohibited.</li>
+          <li><strong>Data Disclaimer:</strong> Data returned relies on third-party public registries; InfoCore is provided "as is" without warranty.</li>
+        </ul>
+      </div>
+
+      <div class="modal-footer">
+        <label class="terms-agree-checkbox">
+          <input type="checkbox" id="termsCheck" onchange="toggleTermsConfirmBtn()" />
+          <span>I have read and agree to the Terms & Conditions and Fair Use Policy.</span>
+        </label>
+
+        <button class="btn btn-primary modal-confirm-btn" id="termsConfirmBtn" disabled onclick="acceptTermsAndClose()">
+          <span>Confirm & Continue</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
