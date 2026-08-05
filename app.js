@@ -31,16 +31,6 @@ initTheme();
       return false;
     }
   });
-
-  // Anti-debugging loop
-  setInterval(function() {
-    const startTime = performance.now();
-    debugger;
-    const endTime = performance.now();
-    if (endTime - startTime > 100) {
-      window.location.reload();
-    }
-  }, 1000);
 })();
 
 // ===== TERMS & CONDITIONS FIRST-TIME MODAL =====
