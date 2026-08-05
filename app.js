@@ -287,19 +287,31 @@ async function doAadharLookup() {
   try {
     let data = null;
 
-    // Direct Vercel Endpoint 1
+    // Direct Vercel Endpoint 1 - Correct working URL
     try {
-      const url1 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
+      const url1 = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=%40AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
       const res1 = await fetch(url1);
-      if (res1.ok) data = await res1.json();
+      if (res1.ok) {
+        data = await res1.json();
+        // Handle nested result format (result.0)
+        if (data && data.result && typeof data.result === 'object' && data.result['0']) {
+          data.result = data.result['0'];
+        }
+      }
     } catch (e) {}
 
-    // Direct Vercel Endpoint 2
+    // Direct Vercel Endpoint 2 - Alternative key
     if (!data || data.status === 'error' || !data.result) {
       try {
-        const url2 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+        const url2 = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
         const res2 = await fetch(url2);
-        if (res2.ok) data = await res2.json();
+        if (res2.ok) {
+          data = await res2.json();
+          // Handle nested result format
+          if (data && data.result && typeof data.result === 'object' && data.result['0']) {
+            data.result = data.result['0'];
+          }
+        }
       } catch (e) {}
     }
 

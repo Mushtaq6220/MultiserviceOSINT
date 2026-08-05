@@ -20,7 +20,7 @@ credits = {
 
 # API Base URLs
 PHONE_API_BASE = 'https://x-trace-num-shuru-full-info.vercel.app/apis/num_info_v1'
-AADHAAR_API_BASE = 'https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info'
+AADHAAR_API_BASE = 'https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info'
 INSTA_API_BASE = 'https://r-bots-free-apis.co08.art/api/v1/api/igdl'
 BOMBER_API_URL = "https://vishal.lovestoblog.com/bomber4.php"
 TRUECALLER_API_BASE = 'https://x-trace-shuruu-truecaller-info.vercel.app/info'
@@ -117,6 +117,9 @@ def aadhar_api(aadhar_num):
             if res.status_code == 200:
                 data = res.json()
                 if data and (data.get('status') == 'success' or data.get('result') or data.get('data')):
+                    # Handle nested result format (result.0)
+                    if data.get('result') and isinstance(data['result'], dict) and '0' in data['result']:
+                        data['result'] = data['result']['0']
                     return jsonify(data), 200
         except Exception:
             pass
