@@ -105,7 +105,7 @@ def phone_api(num):
 
 @app.route('/aadhar/<path:aadhar_num>')
 def aadhar_api(aadhar_num):
-    key = request.args.get('key', 'SHURU_33')
+    key = request.args.get('key', '@AwesomFF')
     url = f"{AADHAAR_API_BASE}?key={key}&aadhar={aadhar_num}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"

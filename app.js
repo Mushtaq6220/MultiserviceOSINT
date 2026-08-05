@@ -544,11 +544,11 @@ async function doAadharLookup() {
   try {
     let data = null;
     try {
-      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=SHURU_33`);
+      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
       data = await res.json();
     } catch (proxyErr) {
       // Direct Vercel Fallback
-      const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+      const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
       const res = await fetch(fallbackUrl);
       data = await res.json();
     }
