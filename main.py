@@ -75,6 +75,10 @@ def route_insta_page():
 def route_bomber_page():
     return send_from_directory('.', 'bomber.html')
 
+@app.route('/netflix')
+def route_netflix_page():
+    return send_from_directory('.', 'netflix.html')
+
 # ===== BACKEND API ENDPOINTS =====
 @app.route('/truecaller_proxy/<path:num>')
 def truecaller_api(num):
