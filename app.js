@@ -253,16 +253,26 @@ function buildNotFoundCard(customMsg) {
 
 function extractRecords(result) {
   if (!result) return [];
+
+  // Parse if result is a stringified JSON
+  if (typeof result === 'string') {
+    try {
+      result = JSON.parse(result);
+    } catch (e) {}
+  }
+
   if (Array.isArray(result)) return result;
-  if (typeof result === 'object') {
-    // If it's a single record object with properties like name, address, etc.
-    if (result.name || result.NAME || result.address || result.num || result.aadhar) {
+
+  if (typeof result === 'object' && result !== null) {
+    // Single profile record
+    if (result.name || result.NAME || result.fname || result.FNAME || result.address || result.num || result.aadhar) {
       return [result];
     }
-    // If it's indexed like {"0": {...}, "1": {...}}
-    const keys = Object.keys(result);
-    if (keys.length > 0) return Object.values(result);
+    // Object indexed as {"0": {...}, "1": {...}}
+    const values = Object.values(result).filter(val => typeof val === 'object' && val !== null);
+    if (values.length > 0) return values;
   }
+
   return [];
 }
 
