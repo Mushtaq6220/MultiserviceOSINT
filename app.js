@@ -289,7 +289,7 @@ async function doAadharLookup() {
 
     // Direct Vercel Endpoint 1 - Correct working URL
     try {
-      const url1 = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=%40AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
+      const url1 = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
       const res1 = await fetch(url1);
       if (res1.ok) {
         data = await res1.json();
@@ -298,7 +298,9 @@ async function doAadharLookup() {
           data.result = data.result['0'];
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      console.error('Direct API 1 failed:', e);
+    }
 
     // Direct Vercel Endpoint 2 - Alternative key
     if (!data || data.status === 'error' || !data.result) {
@@ -312,7 +314,9 @@ async function doAadharLookup() {
             data.result = data.result['0'];
           }
         }
-      } catch (e) {}
+      } catch (e) {
+        console.error('Direct API 2 failed:', e);
+      }
     }
 
     // Proxy Endpoint Fallback
@@ -325,7 +329,12 @@ async function doAadharLookup() {
 
     let records = [];
     if (data) {
-      if (data.result) records = extractRecords(data.result);
+      // Handle nested result.0 format
+      if (data.result && typeof data.result === 'object' && data.result['0']) {
+        records = [data.result['0']];
+      } else if (data.result) {
+        records = extractRecords(data.result);
+      }
       if (records.length === 0 && data.data) records = extractRecords(data.data);
       if (records.length === 0 && (data.name || data.fname || data.aadhar)) records = [data];
     }
