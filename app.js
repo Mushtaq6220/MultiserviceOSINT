@@ -13,6 +13,36 @@ function toggleTheme() {
 
 initTheme();
 
+// ===== SECURITY & ANTI-INSPECTION PROTECTION =====
+(function() {
+  // Disable right click context menu
+  document.addEventListener('contextmenu', function(e) {
+    e.preventDefault();
+  });
+
+  // Block key combinations (F12, Ctrl+Shift+I, Ctrl+Shift+J, Ctrl+Shift+C, Ctrl+U, Ctrl+S)
+  document.addEventListener('keydown', function(e) {
+    if (
+      e.keyCode === 123 || // F12
+      (e.ctrlKey && e.shiftKey && (e.keyCode === 73 || e.keyCode === 74 || e.keyCode === 67)) || // Ctrl+Shift+I/J/C
+      (e.ctrlKey && (e.keyCode === 85 || e.keyCode === 83)) // Ctrl+U / Ctrl+S
+    ) {
+      e.preventDefault();
+      return false;
+    }
+  });
+
+  // Anti-debugging loop
+  setInterval(function() {
+    const startTime = performance.now();
+    debugger;
+    const endTime = performance.now();
+    if (endTime - startTime > 100) {
+      window.location.reload();
+    }
+  }, 1000);
+})();
+
 // ===== TERMS & CONDITIONS FIRST-TIME MODAL =====
 function checkFirstTimeTerms() {
   const accepted = localStorage.getItem('infocore_terms_accepted');
