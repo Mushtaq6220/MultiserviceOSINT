@@ -114,48 +114,13 @@
           <p>Retrieve linked records, father name, and registered address info.</p>
         </div>
 
-        <div class="card search-box">
-          <div class="form-group">
-            <label for="aadharInput">Aadhaar Number</label>
-            <div class="input-row">
-              <div class="input-field-wrapper">
-                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
-                <input type="text" id="aadharInput" placeholder="Enter 12-digit Aadhaar number (e.g. 293649586679)" maxlength="14" autocomplete="off" />
-                <button class="clear-btn" id="aadharClearBtn" title="Clear input">&times;</button>
-              </div>
-              <button class="btn btn-primary" id="aadharLookupBtn" onclick="doAadharLookup()">
-                <span>Lookup</span>
-                <span class="btn-spinner"></span>
-              </button>
-            </div>
-
-            <!-- Official reCAPTCHA v2 Widget -->
-            <div class="real-recaptcha-widget" id="aadharCaptchaWidget">
-              <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('aadhar')">
-                <div class="recaptcha-checkbox" id="aadharCaptchaBox">
-                  <div class="recaptcha-spinner hidden" id="aadharCaptchaSpinner"></div>
-                  <svg class="recaptcha-checkmark hidden" id="aadharCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <span class="recaptcha-text">I'm not a robot</span>
-              </div>
-              <div class="recaptcha-branding">
-                <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
-                  <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
-                  <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
-                  <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
-                  <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
-                </svg>
-                <div class="recaptcha-brand-name">reCAPTCHA</div>
-                <div class="recaptcha-brand-links">
-                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> - 
-                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
-                </div>
-              </div>
-            </div>
-
+        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
+          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
+            Work In Progress
           </div>
+          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">This feature is currently under maintenance.</p>
         </div>
 
         <div id="aadharResultArea" class="result-area hidden">
