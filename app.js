@@ -291,29 +291,48 @@ async function doAadharLookup() {
 
   try {
     let data = null;
+
+    // Try Backend Proxy first
     try {
       const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
-      data = await res.json();
-    } catch (proxyErr) {
-      // Direct Vercel Fallback with @AwesomFF
+      if (res.ok) {
+        data = await res.json();
+      }
+    } catch (e) {
+      data = null;
+    }
+
+    // Check if proxy returned valid records or error payload
+    let records = extractRecords(data && data.result);
+    if (records.length === 0 && data && data.data) records = extractRecords(data.data);
+    if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) records = [data];
+
+    // Direct Fallback 1: Vercel API with @AwesomFF
+    if (!data || records.length === 0 || data.status === 'error') {
       try {
         const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
         const res = await fetch(fallbackUrl);
-        data = await res.json();
-      } catch (e) {
-        // Fallback key SHURU_33
-        const fallbackUrl2 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
-        const res2 = await fetch(fallbackUrl2);
-        data = await res2.json();
-      }
+        if (res.ok) {
+          data = await res.json();
+          records = extractRecords(data && data.result);
+          if (records.length === 0 && data && data.data) records = extractRecords(data.data);
+          if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) records = [data];
+        }
+      } catch (e) {}
     }
 
-    let records = extractRecords(data && data.result);
-    if (records.length === 0 && data && data.data) {
-      records = extractRecords(data.data);
-    }
-    if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) {
-      records = [data];
+    // Direct Fallback 2: Vercel API with key SHURU_33
+    if (!data || records.length === 0 || data.status === 'error') {
+      try {
+        const fallbackUrl2 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+        const res2 = await fetch(fallbackUrl2);
+        if (res2.ok) {
+          data = await res2.json();
+          records = extractRecords(data && data.result);
+          if (records.length === 0 && data && data.data) records = extractRecords(data.data);
+          if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) records = [data];
+        }
+      } catch (e) {}
     }
 
     if (!data || records.length === 0) {
