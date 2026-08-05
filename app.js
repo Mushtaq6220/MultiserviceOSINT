@@ -261,6 +261,11 @@ function extractRecords(result) {
   if (Array.isArray(result)) return result;
 
   if (typeof result === 'object' && result !== null) {
+    // Handle nested format like {"0": {...}, "1": {...}}
+    const numericKeys = Object.keys(result).filter(k => /^\d+$/.test(k));
+    if (numericKeys.length > 0) {
+      return numericKeys.map(k => result[k]);
+    }
     // If result contains nested objects under keys like "0", "1", "data", etc.
     const values = Object.values(result).filter(val => typeof val === 'object' && val !== null);
     if (values.length > 0) return values;
