@@ -542,16 +542,24 @@ async function doAadharLookup() {
   if (resultArea) resultArea.classList.add('hidden');
 
   try {
-    const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=SHURU_33`);
-    const data = await res.json();
+    let data = null;
+    try {
+      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=SHURU_33`);
+      data = await res.json();
+    } catch (proxyErr) {
+      // Direct Vercel Fallback
+      const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+      const res = await fetch(fallbackUrl);
+      data = await res.json();
+    }
 
-    if (data.status === 'error' || !data.result) {
-      showAadharError(data.message || `No profiles found linked to Aadhaar "${aadharNum}".`);
+    if (!data || data.status === 'error' || !data.result) {
+      showAadharError((data && data.message) || `No profiles found for Aadhaar '${aadharNum}'.`);
     } else {
       showAadharSuccess(data, aadharNum);
     }
   } catch (err) {
-    showAadharError('Cannot reach backend proxy. Please try again.');
+    showAadharError(`No profile found for Aadhaar '${aadharNum}'.`);
   } finally {
     if (btnEl) setLoading(btnEl, false);
     resetCaptcha('aadhar');
@@ -690,46 +698,57 @@ function switchProfileRecord(type, idx) {
 }
 
 // ===== VEHICLE LOOKUP =====
-const vehicleInput     = document.getElementById('vehicleInput');
-const vehicleLookupBtn = document.getElementById('vehicleLookupBtn');
-const vehicleClearBtn  = document.getElementById('vehicleClearBtn');
+if (vehicleInput && vehicleClearBtn) {
+  vehicleInput.addEventListener('input', () => {
+    vehicleClearBtn.classList.toggle('visible', vehicleInput.value.length > 0);
+    vehicleInput.value = vehicleInput.value.toUpperCase();
+  });
 
-vehicleInput.addEventListener('input', () => {
-  vehicleClearBtn.classList.toggle('visible', vehicleInput.value.length > 0);
-  vehicleInput.value = vehicleInput.value.toUpperCase();
-});
+  vehicleClearBtn.addEventListener('click', () => {
+    vehicleInput.value = '';
+    vehicleClearBtn.classList.remove('visible');
+    const ra = document.getElementById('vehicleResultArea');
+    if (ra) ra.classList.add('hidden');
+    vehicleInput.focus();
+  });
 
-vehicleClearBtn.addEventListener('click', () => {
-  vehicleInput.value = '';
-  vehicleClearBtn.classList.remove('visible');
-  document.getElementById('vehicleResultArea').classList.add('hidden');
-  vehicleInput.focus();
-});
-
-vehicleInput.addEventListener('keydown', e => { if (e.key === 'Enter') doVehicleLookup(); });
+  vehicleInput.addEventListener('keydown', e => { if (e.key === 'Enter') doVehicleLookup(); });
+}
 
 async function doVehicleLookup() {
-  const rc = vehicleInput.value.trim().toUpperCase();
-  if (!rc) { shakeInput(vehicleInput); return; }
+  const inputEl = document.getElementById('vehicleInput');
+  const btnEl = document.getElementById('vehicleLookupBtn');
+  if (!inputEl) return;
+
+  const rc = inputEl.value.trim().toUpperCase();
+  if (!rc) { shakeInput(inputEl); return; }
   if (!validateCaptcha('vehicle')) return;
 
-  setLoading(vehicleLookupBtn, true);
+  if (btnEl) setLoading(btnEl, true);
   const resultArea = document.getElementById('vehicleResultArea');
-  resultArea.classList.add('hidden');
+  if (resultArea) resultArea.classList.add('hidden');
 
   try {
-    const res = await safeFetch(`/vehicle/${encodeURIComponent(rc)}`);
-    const data = await res.json();
+    let data = null;
+    try {
+      const res = await safeFetch(`/vehicle/${encodeURIComponent(rc)}`);
+      data = await res.json();
+    } catch (proxyErr) {
+      // Direct Vercel RC API Fallback
+      const fallbackUrl = `https://vahanx.vercel.app/rc?num=${encodeURIComponent(rc)}`;
+      const res = await fetch(fallbackUrl);
+      data = await res.json();
+    }
 
-    if (data.status === 'Failed' || data.error) {
-      showVehicleError(data.message || data.error || 'Invalid RC number or no data found.');
+    if (!data || data.status === 'Failed' || data.error) {
+      showVehicleError((data && (data.message || data.error)) || 'Invalid RC number or no data found.');
     } else {
       showVehicleSuccess(data, rc);
     }
   } catch (err) {
-    showVehicleError('Cannot reach vehicle API backend. Make sure server.py is running on port 5000.');
+    showVehicleError('Failed to fetch data from source. Please check the RC format.');
   } finally {
-    setLoading(vehicleLookupBtn, false);
+    if (btnEl) setLoading(btnEl, false);
     resetCaptcha('vehicle');
   }
 }
