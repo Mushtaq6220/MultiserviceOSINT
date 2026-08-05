@@ -295,13 +295,27 @@ async function doAadharLookup() {
       const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
       data = await res.json();
     } catch (proxyErr) {
-      // Direct Vercel Fallback
-      const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
-      const res = await fetch(fallbackUrl);
-      data = await res.json();
+      // Direct Vercel Fallback with @AwesomFF
+      try {
+        const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
+        const res = await fetch(fallbackUrl);
+        data = await res.json();
+      } catch (e) {
+        // Fallback key SHURU_33
+        const fallbackUrl2 = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+        const res2 = await fetch(fallbackUrl2);
+        data = await res2.json();
+      }
     }
 
-    const records = extractRecords(data && data.result);
+    let records = extractRecords(data && data.result);
+    if (records.length === 0 && data && data.data) {
+      records = extractRecords(data.data);
+    }
+    if (records.length === 0 && data && (data.name || data.NAME || data.aadhar)) {
+      records = [data];
+    }
+
     if (!data || records.length === 0) {
       showAadharError((data && data.message) || `No profile found for Aadhaar '${aadharNum}'.`);
     } else {
