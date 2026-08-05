@@ -292,10 +292,11 @@ async function doAadharLookup() {
   try {
     let data = null;
 
-    // Direct Vercel Endpoint 1 - Correct working URL
+    // Direct Vercel Endpoint 1 - Correct working URL with CORS proxy
     try {
-      const url1 = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
-      const res1 = await fetch(url1);
+      const apiUrl = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
+      const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+      const res1 = await fetch(corsProxyUrl);
       if (res1.ok) {
         data = await res1.json();
         // Handle nested result format (result.0)
@@ -307,11 +308,12 @@ async function doAadharLookup() {
       console.error('Direct API 1 failed:', e);
     }
 
-    // Direct Vercel Endpoint 2 - Alternative key
+    // Direct Vercel Endpoint 2 - Alternative key with CORS proxy
     if (!data || data.status === 'error' || !data.result) {
       try {
-        const url2 = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
-        const res2 = await fetch(url2);
+        const apiUrl = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
+        const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
+        const res2 = await fetch(corsProxyUrl);
         if (res2.ok) {
           data = await res2.json();
           // Handle nested result format
