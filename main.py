@@ -182,7 +182,7 @@ def start_bomber():
         return jsonify({"status": "error", "message": "Phone number is required"}), 400
 
     # Stop any existing bomber for this phone
-    stop_bomber_thread(phone)
+    stop_bomber_thread(phone)756
 
     def bomber_task():
         end_time = time.time() + duration

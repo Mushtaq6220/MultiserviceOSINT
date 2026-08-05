@@ -1147,3 +1147,21 @@ document.getElementById('bomberClearBtn')?.addEventListener('click', function() 
   document.getElementById('bomberInput').value = '';
   document.getElementById('bomberResultArea').classList.add('hidden');
 });
+
+// ===== BOMBER SERVER SELECTION MODAL =====
+function openServerModal() {
+  const modal = document.getElementById('serverModal');
+  if (modal) modal.classList.remove('hidden');
+}
+
+function closeServerModal() {
+  const modal = document.getElementById('serverModal');
+  if (modal) modal.classList.add('hidden');
+}
+
+document.addEventListener('click', function(e) {
+  const modal = document.getElementById('serverModal');
+  if (modal && e.target === modal) {
+    closeServerModal();
+  }
+});
