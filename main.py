@@ -108,7 +108,6 @@ def aadhar_api(aadhar_num):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    # Try keys in order: @AwesomFF, SHURU_33
     keys_to_try = ["@AwesomFF", "SHURU_33"]
     
     for key in keys_to_try:
@@ -116,19 +115,9 @@ def aadhar_api(aadhar_num):
         try:
             res = requests.get(url, headers=headers, timeout=12)
             if res.status_code == 200:
-                try:
-                    data = res.json()
-                    # Verify if response contains valid record
-                    result = data.get('result') or data.get('data') or data
-                    if result:
-                        if isinstance(result, dict) and len(result) > 0:
-                            return jsonify(data), 200
-                        elif isinstance(result, list) and len(result) > 0:
-                            return jsonify(data), 200
-                        elif data.get('name') or data.get('NAME') or data.get('aadhar'):
-                            return jsonify(data), 200
-                except Exception:
-                    pass
+                data = res.json()
+                if data and (data.get('status') == 'success' or data.get('result') or data.get('data')):
+                    return jsonify(data), 200
         except Exception:
             pass
 
