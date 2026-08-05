@@ -105,20 +105,34 @@ def phone_api(num):
 
 @app.route('/aadhar/<path:aadhar_num>')
 def aadhar_api(aadhar_num):
-    key = request.args.get('key', '@AwesomFF')
-    url = f"{AADHAAR_API_BASE}?key={key}&aadhar={aadhar_num}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    try:
-        response = requests.get(url, headers=headers, timeout=15)
+    # Try keys in order: @AwesomFF, SHURU_33
+    keys_to_try = ["@AwesomFF", "SHURU_33"]
+    
+    for key in keys_to_try:
+        url = f"{AADHAAR_API_BASE}?key={key}&aadhar={aadhar_num}"
         try:
-            data = response.json()
-            return jsonify(data), 200
+            res = requests.get(url, headers=headers, timeout=12)
+            if res.status_code == 200:
+                try:
+                    data = res.json()
+                    # Verify if response contains valid record
+                    result = data.get('result') or data.get('data') or data
+                    if result:
+                        if isinstance(result, dict) and len(result) > 0:
+                            return jsonify(data), 200
+                        elif isinstance(result, list) and len(result) > 0:
+                            return jsonify(data), 200
+                        elif data.get('name') or data.get('NAME') or data.get('aadhar'):
+                            return jsonify(data), 200
+                except Exception:
+                    pass
         except Exception:
-            return jsonify({"status": "error", "message": f"No profile found for Aadhaar '{aadhar_num}'."}), 200
-    except requests.exceptions.RequestException as e:
-        return jsonify({"status": "error", "message": f"Backend proxy network error: {e}"}), 500
+            pass
+
+    return jsonify({"status": "error", "message": f"No profile found for Aadhaar '{aadhar_num}'."}), 200
 
 @app.route('/instagram')
 def instagram_api():
