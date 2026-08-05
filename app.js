@@ -252,12 +252,89 @@ function buildNotFoundCard(customMsg) {
 }
 
 function extractRecords(result) {
+  if (!result) return [];
   if (Array.isArray(result)) return result;
-  if (typeof result === 'object' && result !== null) {
+  if (typeof result === 'object') {
+    // If it's a single record object with properties like name, address, etc.
+    if (result.name || result.NAME || result.address || result.num || result.aadhar) {
+      return [result];
+    }
+    // If it's indexed like {"0": {...}, "1": {...}}
     const keys = Object.keys(result);
     if (keys.length > 0) return Object.values(result);
   }
   return [];
+}
+
+async function doAadharLookup() {
+  const inputEl = document.getElementById('aadharInput');
+  const btnEl = document.getElementById('aadharLookupBtn');
+  if (!inputEl) return;
+
+  const aadharNum = inputEl.value.trim();
+  if (!aadharNum) { shakeInput(inputEl); return; }
+  if (!validateCaptcha('aadhar')) return;
+
+  if (btnEl) setLoading(btnEl, true);
+  const resultArea = document.getElementById('aadharResultArea');
+  if (resultArea) resultArea.classList.add('hidden');
+
+  try {
+    let data = null;
+    try {
+      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
+      data = await res.json();
+    } catch (proxyErr) {
+      // Direct Vercel Fallback
+      const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
+      const res = await fetch(fallbackUrl);
+      data = await res.json();
+    }
+
+    const records = extractRecords(data && data.result);
+    if (!data || records.length === 0) {
+      showAadharError((data && data.message) || `No profile found for Aadhaar '${aadharNum}'.`);
+    } else {
+      showAadharSuccess(data, aadharNum, records);
+    }
+  } catch (err) {
+    showAadharError(`No profile found for Aadhaar '${aadharNum}'.`);
+  } finally {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('aadhar');
+  }
+}
+
+function showAadharError(msg) {
+  const ra = document.getElementById('aadharResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('aadharErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const card = document.getElementById('aadharSuccessCard');
+  if (card) {
+    card.classList.remove('hidden');
+    card.innerHTML = buildNotFoundCard(msg);
+  }
+}
+
+function showAadharSuccess(data, searchedAadhar, records) {
+  const ra = document.getElementById('aadharResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('aadharErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  
+  const successCard = document.getElementById('aadharSuccessCard');
+  if (successCard) successCard.classList.remove('hidden');
+
+  const recs = records || extractRecords(data.result);
+  if (recs.length === 0) {
+    showAadharError(`No profile found for Aadhaar '${searchedAadhar}'.`);
+    return;
+  }
+
+  renderProfileCard('aadhar', recs, 0, searchedAadhar, data);
 }
 
 // ===== PHONE LOOKUP =====
@@ -526,76 +603,6 @@ if (aadharInput && aadharClearBtn) {
   });
 
   aadharInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAadharLookup(); });
-}
-
-async function doAadharLookup() {
-  const inputEl = document.getElementById('aadharInput');
-  const btnEl = document.getElementById('aadharLookupBtn');
-  if (!inputEl) return;
-
-  const aadharNum = inputEl.value.trim();
-  if (!aadharNum) { shakeInput(inputEl); return; }
-  if (!validateCaptcha('aadhar')) return;
-
-  if (btnEl) setLoading(btnEl, true);
-  const resultArea = document.getElementById('aadharResultArea');
-  if (resultArea) resultArea.classList.add('hidden');
-
-  try {
-    let data = null;
-    try {
-      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
-      data = await res.json();
-    } catch (proxyErr) {
-      // Direct Vercel Fallback
-      const fallbackUrl = `https://shuuurrrruuuuuu-aadhar-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
-      const res = await fetch(fallbackUrl);
-      data = await res.json();
-    }
-
-    if (!data || data.status === 'error' || !data.result) {
-      showAadharError((data && data.message) || `No profiles found for Aadhaar '${aadharNum}'.`);
-    } else {
-      showAadharSuccess(data, aadharNum);
-    }
-  } catch (err) {
-    showAadharError(`No profile found for Aadhaar '${aadharNum}'.`);
-  } finally {
-    if (btnEl) setLoading(btnEl, false);
-    resetCaptcha('aadhar');
-  }
-}
-
-function showAadharError(msg) {
-  const ra = document.getElementById('aadharResultArea');
-  if (!ra) return;
-  ra.classList.remove('hidden');
-  const errCard = document.getElementById('aadharErrorCard');
-  if (errCard) errCard.classList.add('hidden');
-  const card = document.getElementById('aadharSuccessCard');
-  if (card) {
-    card.classList.remove('hidden');
-    card.innerHTML = buildNotFoundCard(msg);
-  }
-}
-
-function showAadharSuccess(data, searchedAadhar) {
-  const ra = document.getElementById('aadharResultArea');
-  if (!ra) return;
-  ra.classList.remove('hidden');
-  const errCard = document.getElementById('aadharErrorCard');
-  if (errCard) errCard.classList.add('hidden');
-  
-  const successCard = document.getElementById('aadharSuccessCard');
-  if (successCard) successCard.classList.remove('hidden');
-
-  const records = extractRecords(data.result);
-  if (records.length === 0) {
-    showAadharError(null);
-    return;
-  }
-
-  renderProfileCard('aadhar', records, 0, searchedAadhar, data);
 }
 
 // ===== CLEAN PROFILE RENDERER =====
