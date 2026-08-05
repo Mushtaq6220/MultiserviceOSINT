@@ -108,18 +108,25 @@ def aadhar_api(aadhar_num):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    keys_to_try = ["@AwesomFF", "SHURU_33"]
     
-    for key in keys_to_try:
-        url = f"{AADHAAR_API_BASE}?key={key}&aadhar={aadhar_num}"
+    # List of candidate endpoints to query
+    endpoints = []
+    if len(aadhar_num) == 10 and aadhar_num.isdigit():
+        endpoints.append(f"{PHONE_API_BASE}?key=@AwesomFF&num={aadhar_num}")
+        endpoints.append(f"{PHONE_API_BASE}?key=SHURU_33&num={aadhar_num}")
+    
+    endpoints.append(f"{AADHAAR_API_BASE}?key=@AwesomFF&aadhar={aadhar_num}")
+    endpoints.append(f"{AADHAAR_API_BASE}?key=SHURU_33&aadhar={aadhar_num}")
+
+    for url in endpoints:
         try:
-            res = requests.get(url, headers=headers, timeout=12)
+            res = requests.get(url, headers=headers, timeout=10)
             if res.status_code == 200:
                 data = res.json()
-                if data and (data.get('status') == 'success' or data.get('result') or data.get('data')):
-                    # Handle nested result format (result.0)
-                    if data.get('result') and isinstance(data['result'], dict) and '0' in data['result']:
-                        data['result'] = data['result']['0']
+                if data:
+                    res_obj = data.get('result') or data.get('data') or data
+                    if isinstance(res_obj, dict) and '0' in res_obj:
+                        data['result'] = res_obj['0']
                     return jsonify(data), 200
         except Exception:
             pass

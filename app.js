@@ -292,61 +292,40 @@ async function doAadharLookup() {
   try {
     let data = null;
 
-    // Direct Vercel Endpoint 1 - Correct working URL with CORS proxy
+    // Call backend proxy first
     try {
-      const apiUrl = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=@AwesomFF&aadhar=${encodeURIComponent(aadharNum)}`;
-      const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-      const res1 = await fetch(corsProxyUrl);
-      if (res1.ok) {
-        data = await res1.json();
-        // Handle nested result format (result.0)
-        if (data && data.result && typeof data.result === 'object' && data.result['0']) {
-          data.result = data.result['0'];
-        }
+      const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
+      if (res.ok) {
+        data = await res.json();
       }
     } catch (e) {
-      console.error('Direct API 1 failed:', e);
+      console.error('Backend Aadhaar proxy error:', e);
     }
 
-    // Direct Vercel Endpoint 2 - Alternative key with CORS proxy
+    // Direct fallbacks if proxy returns error or no data
     if (!data || data.status === 'error' || !data.result) {
-      try {
-        const apiUrl = `https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info?key=SHURU_33&aadhar=${encodeURIComponent(aadharNum)}`;
-        const corsProxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(apiUrl)}`;
-        const res2 = await fetch(corsProxyUrl);
-        if (res2.ok) {
-          data = await res2.json();
-          // Handle nested result format
-          if (data && data.result && typeof data.result === 'object' && data.result['0']) {
-            data.result = data.result['0'];
-          }
-        }
-      } catch (e) {
-        console.error('Direct API 2 failed:', e);
+      if (aadharNum.length === 10 && /^\d+$/.test(aadharNum)) {
+        try {
+          const res = await safeFetch(`/phone/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
+          if (res.ok) data = await res.json();
+        } catch (e) {}
       }
-    }
-
-    // Proxy Endpoint Fallback
-    if (!data || data.status === 'error' || !data.result) {
-      try {
-        const res3 = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=@AwesomFF`);
-        if (res3.ok) data = await res3.json();
-      } catch (e) {}
     }
 
     let records = [];
     if (data) {
-      // Handle nested result.0 format
-      if (data.result && typeof data.result === 'object' && data.result['0']) {
-        records = [data.result['0']];
-      } else if (data.result) {
-        records = extractRecords(data.result);
+      if (data.result) {
+        if (typeof data.result === 'object' && data.result['0']) {
+          records = [data.result['0']];
+        } else {
+          records = extractRecords(data.result);
+        }
       }
       if (records.length === 0 && data.data) records = extractRecords(data.data);
-      if (records.length === 0 && (data.name || data.fname || data.aadhar)) records = [data];
+      if (records.length === 0 && (data.name || data.fname || data.aadhar || data.num)) records = [data];
     }
 
-    if (!data || records.length === 0) {
+    if (!data || records.length === 0 || data.status === 'error') {
       showAadharError((data && data.message) || `No profile found for Aadhaar '${aadharNum}'.`);
     } else {
       showAadharSuccess(data, aadharNum, records);
