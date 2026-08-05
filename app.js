@@ -731,17 +731,17 @@ async function doVehicleLookup() {
   try {
     let data = null;
     try {
-      const res = await safeFetch(`/vehicle/${encodeURIComponent(rc)}`);
+      const res = await safeFetch(`/vehicle/${encodeURIComponent(rc)}?key=@AwesomFF`);
       data = await res.json();
     } catch (proxyErr) {
-      // Direct Vercel RC API Fallback
-      const fallbackUrl = `https://vahanx.vercel.app/rc?num=${encodeURIComponent(rc)}`;
+      // Direct Vercel API Fallback
+      const fallbackUrl = `https://x-trace-shruu-vehicle-full-info.vercel.app/api?key=@AwesomFF&search=${encodeURIComponent(rc)}`;
       const res = await fetch(fallbackUrl);
       data = await res.json();
     }
 
-    if (!data || data.status === 'Failed' || data.error) {
-      showVehicleError((data && (data.message || data.error)) || 'Invalid RC number or no data found.');
+    if (!data || data.error || (data.status && data.status !== '100' && data.status !== '1')) {
+      showVehicleError((data && (data.message || data.error)) || 'Invalid RC number or no details found.');
     } else {
       showVehicleSuccess(data, rc);
     }
@@ -755,10 +755,14 @@ async function doVehicleLookup() {
 
 function showVehicleError(msg) {
   const ra = document.getElementById('vehicleResultArea');
+  if (!ra) return;
   ra.classList.remove('hidden');
-  document.getElementById('vehicleErrorCard').classList.remove('hidden');
-  document.getElementById('vehicleSuccessCard').classList.add('hidden');
-  document.getElementById('vehicleErrorDesc').textContent = msg;
+  const errCard = document.getElementById('vehicleErrorCard');
+  if (errCard) errCard.classList.remove('hidden');
+  const succCard = document.getElementById('vehicleSuccessCard');
+  if (succCard) succCard.classList.add('hidden');
+  const errDesc = document.getElementById('vehicleErrorDesc');
+  if (errDesc) errDesc.textContent = msg;
 }
 
 const catMeta = {
@@ -773,50 +777,93 @@ const catMeta = {
 
 function showVehicleSuccess(data, rc) {
   const ra = document.getElementById('vehicleResultArea');
+  if (!ra) return;
   ra.classList.remove('hidden');
-  document.getElementById('vehicleErrorCard').classList.add('hidden');
-  document.getElementById('vehicleSuccessCard').classList.remove('hidden');
+  const errCard = document.getElementById('vehicleErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const succCard = document.getElementById('vehicleSuccessCard');
+  if (succCard) succCard.classList.remove('hidden');
 
-  document.getElementById('vehicleDisplayQuery').textContent = `RC: ${rc}`;
+  // Support both direct response payload and legacy format
+  const resp = data.response || data;
 
-  const catGrid = document.getElementById('vehicleCategoryGrid');
-  catGrid.innerHTML = '';
+  const owner       = resp.owner || (data['Owner Details'] && data['Owner Details']['Owner Name']) || 'N/A';
+  const fatherName  = resp.ownerFatherName || (data['Owner Details'] && data['Owner Details']["Father's Name"]) || 'N/A';
+  const regNo       = resp.regNo || rc;
+  const vehicleName = resp.vehicle || resp.variant || (data['Vehicle Details'] && data['Vehicle Details']['Maker Model']) || 'N/A';
+  const vehicleClass= resp.vehicleClass || 'N/A';
+  const fuelType    = resp.fuelType || resp.fuelid || 'N/A';
+  const engine      = resp.engine || 'N/A';
+  const chassis     = resp.chassis || 'N/A';
+  const regDate     = resp.regDate || 'N/A';
+  const rtoName     = resp.rtoName || (resp.rtoData && resp.rtoData.rtoName) || 'N/A';
+  const state       = resp.statename || 'N/A';
+  const insuranceCo = resp.insuranceCompanyName || 'N/A';
+  const insuranceUp = resp.insuranceUpto || 'N/A';
+  const address     = resp.presentAddress || resp.permAddress || 'N/A';
 
-  for (const [catName, catData] of Object.entries(data)) {
-    const metaTitle = catMeta[catName];
-    if (metaTitle === null) continue;
-    if (typeof catData !== 'object' || !catData) continue;
+  succCard.innerHTML = `
+    <div class="profile-card-simple">
+      <div class="profile-head-row">
+        <div class="avatar-circle">🚗</div>
+        <div class="profile-main-info">
+          <div class="profile-name">${escHtml(owner)}</div>
+          <div class="profile-subtext">Vehicle Owner • RC: ${escHtml(regNo)}</div>
+        </div>
+      </div>
 
-    const entries = Object.entries(catData);
-    if (!entries.length) continue;
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Vehicle Model</div>
+          <div class="info-val">${escHtml(vehicleName)}</div>
+        </div>
 
-    const grp = document.createElement('div');
-    grp.className = 'v-group';
+        <div class="info-item">
+          <div class="info-label">Father's Name</div>
+          <div class="info-val">${escHtml(fatherName)}</div>
+        </div>
 
-    const header = document.createElement('div');
-    header.className = 'v-group-title';
-    header.innerHTML = `
-      <span>${escHtml(metaTitle || catName)}</span>
-      <span style="opacity: 0.7; font-weight: normal;">${entries.length} items</span>
-    `;
+        <div class="info-item">
+          <div class="info-label">Vehicle Class / Fuel</div>
+          <div class="info-val">${escHtml(vehicleClass)} (${escHtml(fuelType)})</div>
+        </div>
 
-    const body = document.createElement('div');
-    body.className = 'v-group-content';
+        <div class="info-item">
+          <div class="info-label">RTO Authority</div>
+          <div class="info-val">${escHtml(rtoName)} (${escHtml(state)})</div>
+        </div>
 
-    entries.forEach(([key, val]) => {
-      const field = document.createElement('div');
-      field.className = 'v-field';
-      field.innerHTML = `
-        <div class="v-key">${escHtml(key)}</div>
-        <div class="v-val">${escHtml(String(val))}</div>
-      `;
-      body.appendChild(field);
-    });
+        <div class="info-item">
+          <div class="info-label">Engine Number</div>
+          <div class="info-val">${escHtml(engine)}</div>
+        </div>
 
-    grp.appendChild(header);
-    grp.appendChild(body);
-    catGrid.appendChild(grp);
-  }
+        <div class="info-item">
+          <div class="info-label">Chassis Number</div>
+          <div class="info-val">${escHtml(chassis)}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Registration Date</div>
+          <div class="info-val">${escHtml(regDate)}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Insurance Status</div>
+          <div class="info-val">${escHtml(insuranceCo)} (Upto: ${escHtml(insuranceUp)})</div>
+        </div>
+      </div>
+
+      ${address !== 'N/A' ? `
+        <div class="address-box">
+          <div class="info-label">Owner Registered Address</div>
+          <div class="info-val" style="margin-top: 4px; font-weight: 500;">${escHtml(address)}</div>
+        </div>
+      ` : ''}
+
+      <div class="output-credit">@MushtaqOSINT()</div>
+    </div>
+  `;
 }
 
 // ===== INSTAGRAM LOOKUP =====

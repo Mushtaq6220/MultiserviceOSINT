@@ -142,114 +142,23 @@ def instagram_api():
         return jsonify({"status": False, "message": f"Failed to reach Instagram API: {e}"}), 500
 
 def get_vehicle_details(rc_number):
-    url = f"https://vahanx.vercel.app/rc?num={rc_number}"
+    key = request.args.get('key', '@AwesomFF')
+    url = f"https://x-trace-shruu-vehicle-full-info.vercel.app/api?key={key}&search={rc_number}"
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-    response = requests.get(url, headers=headers)
-
-    if response.status_code != 200:
-        return {"error": "Failed to fetch data from source"}
-
-    soup = BeautifulSoup(response.content, 'html.parser')
-
-    owner_card = soup.find('div', class_='owner-card')
-    if not owner_card:
-        return {"error": "Invalid RC number or details not found"}
-
-    structured_data = {
-        "Owner Details": {},
-        "Vehicle Details": {},
-        "Registration Details": {},
-        "Insurance Details": {},
-        "Compliance Details": {},
-        "Other Details": {}
-    }
-
-    owner_name = owner_card.find('h2')
-    if owner_name:
-        structured_data["Owner Details"]["Owner Name"] = owner_name.text.strip()
-
-    badge = owner_card.find('span', class_='badge')
-    if badge:
-        structured_data["Vehicle Details"]["Status"] = badge.text.strip()
-
-    info_grid = soup.find('div', class_='info-grid')
-    if info_grid:
-        items = info_grid.find_all('div', class_='info-item')
-        for item in items:
-            label = item.find('div', class_='label')
-            value = item.find('div', class_='value')
-            if label and value:
-                lbl_text = label.text.strip()
-                val_text = value.text.strip()
-                if "ownership" in lbl_text.lower():
-                    structured_data["Owner Details"]["Ownership"] = val_text
-                elif "rc status" in lbl_text.lower():
-                    structured_data["Vehicle Details"]["RC Status"] = val_text
-                else:
-                    structured_data["Registration Details"][lbl_text] = val_text
-
-    sections = soup.find_all('div', class_='section')
-
-    key_map = {
-        "Owner Details": ["Owner Name", "Ownership", "Father's Name", "Owner Address"],
-        "Vehicle Details": ["Vehicle Class", "Fuel Type", "Maker Model", "Chassis Number", "Engine Number", "Fuel Norms", "Color", "Cubic Capacity"],
-        "Registration Details": ["Registering Authority", "Registration Date", "RTO Phone Number"],
-        "Insurance Details": ["Insurance Company", "Insurance Policy No", "Insurance Expiry", "Insurance Up To"],
-        "Compliance Details": ["Fitness Up To", "PUCC Up To", "Tax Up To"]
-    }
-
-    for sec in sections:
-        sec_title_el = sec.find('h3')
-        if not sec_title_el:
-            continue
-
-        rows = sec.find_all('div', class_='row')
-        for row in rows:
-            key_el = row.find('span', class_='key')
-            val_el = row.find('span', class_='val')
-
-            if not key_el or not val_el:
-                continue
-
-            key = key_el.text.strip()
-            value = val_el.text.strip()
-
-            found = False
-            for category, keys in key_map.items():
-                if any(k.lower() in key.lower() for k in keys):
-                    structured_data[category][key] = value
-                    found = True
-                    break
-            if not found:
-                structured_data["Other Details"][key] = value
-
-    if "Registration Details" in structured_data and "RTO Phone Number" in structured_data["Registration Details"]:
-        reg = structured_data["Registration Details"]
-        ordered_keys = []
-        for k in key_map["Registration Details"]:
-            if k in reg:
-                ordered_keys.append(k)
-        if "RTO Phone Number" in reg:
-            if "Registration Date" in ordered_keys:
-                idx = ordered_keys.index("Registration Date") + 1
-                ordered_keys.insert(idx, "RTO Phone Number")
-            else:
-                ordered_keys.append("RTO Phone Number")
-        for k in reg:
-            if k not in ordered_keys:
-                ordered_keys.append(k)
-        structured_data["Registration Details"] = {k: reg[k] for k in ordered_keys}
-
-    final_data = {k: v for k, v in structured_data.items() if v}
-    final_data["Developer Info"] = credits
-    return final_data
+    try:
+        response = requests.get(url, headers=headers, timeout=15)
+        if response.status_code == 200:
+            return response.json()
+    except Exception as e:
+        print(f"Vehicle API error: {e}")
+    return {"error": "Failed to fetch vehicle details from source"}
 
 @app.route('/vehicle/<path:rc_input>')
 def vehicle_api(rc_input):
     data = get_vehicle_details(rc_input)
-    return Response(json.dumps(data, indent=4, ensure_ascii=False), mimetype='application/json')
+    return jsonify(data), 200
 
 # ===== BOMBER API ENDPOINTS =====
 @app.route('/api/bomber/start', methods=['POST'])
