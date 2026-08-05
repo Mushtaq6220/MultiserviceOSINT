@@ -114,56 +114,13 @@
           <p>Download public Instagram Reels & videos in high quality.</p>
         </div>
 
-        <div class="card search-box">
-          <div class="form-group">
-            <label for="instaInput">Instagram Reel / Video URL</label>
-            <div class="input-row">
-              <div class="input-field-wrapper">
-                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                <input type="text" id="instaInput" placeholder="Paste link: https://www.instagram.com/reel/..." autocomplete="off" />
-                <button class="clear-btn" id="instaClearBtn" title="Clear input">&times;</button>
-              </div>
-              <button class="btn btn-primary" id="instaLookupBtn" onclick="doInstaLookup()">
-                <span>Download</span>
-                <span class="btn-spinner"></span>
-              </button>
-            </div>
-
-            <!-- Official reCAPTCHA v2 Widget -->
-            <div class="real-recaptcha-widget" id="instaCaptchaWidget">
-              <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('insta')">
-                <div class="recaptcha-checkbox" id="instaCaptchaBox">
-                  <div class="recaptcha-spinner hidden" id="instaCaptchaSpinner"></div>
-                  <svg class="recaptcha-checkmark hidden" id="instaCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <span class="recaptcha-text">I'm not a robot</span>
-              </div>
-              <div class="recaptcha-branding">
-                <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
-                  <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
-                  <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
-                  <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
-                  <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
-                </svg>
-                <div class="recaptcha-brand-name">reCAPTCHA</div>
-                <div class="recaptcha-brand-links">
-                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> - 
-                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
-                </div>
-              </div>
-            </div>
-
-            <div class="quality-picker">
-              <span class="picker-label">Video Quality:</span>
-              <div class="picker-options">
-                <button class="q-btn" data-quality="480" onclick="setQuality(this)">480p</button>
-                <button class="q-btn active" data-quality="720" onclick="setQuality(this)">720p HD</button>
-                <button class="q-btn" data-quality="1080" onclick="setQuality(this)">1080p FHD</button>
-              </div>
-            </div>
+        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
+          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
+            Work In Progress
           </div>
+          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">This feature is currently under maintenance.</p>
         </div>
 
         <div id="instaResultArea" class="result-area hidden">
