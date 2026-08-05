@@ -265,18 +265,21 @@ const phoneInput     = document.getElementById('phoneInput');
 const phoneLookupBtn = document.getElementById('phoneLookupBtn');
 const phoneClearBtn  = document.getElementById('phoneClearBtn');
 
-phoneInput.addEventListener('input', () => {
-  phoneClearBtn.classList.toggle('visible', phoneInput.value.length > 0);
-});
+if (phoneInput && phoneClearBtn) {
+  phoneInput.addEventListener('input', () => {
+    phoneClearBtn.classList.toggle('visible', phoneInput.value.length > 0);
+  });
 
-phoneClearBtn.addEventListener('click', () => {
-  phoneInput.value = '';
-  phoneClearBtn.classList.remove('visible');
-  document.getElementById('phoneResultArea').classList.add('hidden');
-  phoneInput.focus();
-});
+  phoneClearBtn.addEventListener('click', () => {
+    phoneInput.value = '';
+    phoneClearBtn.classList.remove('visible');
+    const ra = document.getElementById('phoneResultArea');
+    if (ra) ra.classList.add('hidden');
+    phoneInput.focus();
+  });
 
-phoneInput.addEventListener('keydown', e => { if (e.key === 'Enter') doPhoneLookup(); });
+  phoneInput.addEventListener('keydown', e => { if (e.key === 'Enter') doPhoneLookup(); });
+}
 
 async function doPhoneLookup() {
   const num = phoneInput.value.trim();
@@ -509,27 +512,34 @@ const aadharInput     = document.getElementById('aadharInput');
 const aadharLookupBtn = document.getElementById('aadharLookupBtn');
 const aadharClearBtn  = document.getElementById('aadharClearBtn');
 
-aadharInput.addEventListener('input', () => {
-  aadharClearBtn.classList.toggle('visible', aadharInput.value.length > 0);
-});
+if (aadharInput && aadharClearBtn) {
+  aadharInput.addEventListener('input', () => {
+    aadharClearBtn.classList.toggle('visible', aadharInput.value.length > 0);
+  });
 
-aadharClearBtn.addEventListener('click', () => {
-  aadharInput.value = '';
-  aadharClearBtn.classList.remove('visible');
-  document.getElementById('aadharResultArea').classList.add('hidden');
-  aadharInput.focus();
-});
+  aadharClearBtn.addEventListener('click', () => {
+    aadharInput.value = '';
+    aadharClearBtn.classList.remove('visible');
+    const ra = document.getElementById('aadharResultArea');
+    if (ra) ra.classList.add('hidden');
+    aadharInput.focus();
+  });
 
-aadharInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAadharLookup(); });
+  aadharInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAadharLookup(); });
+}
 
 async function doAadharLookup() {
-  const aadharNum = aadharInput.value.trim();
-  if (!aadharNum) { shakeInput(aadharInput); return; }
+  const inputEl = document.getElementById('aadharInput');
+  const btnEl = document.getElementById('aadharLookupBtn');
+  if (!inputEl) return;
+
+  const aadharNum = inputEl.value.trim();
+  if (!aadharNum) { shakeInput(inputEl); return; }
   if (!validateCaptcha('aadhar')) return;
 
-  setLoading(aadharLookupBtn, true);
+  if (btnEl) setLoading(btnEl, true);
   const resultArea = document.getElementById('aadharResultArea');
-  resultArea.classList.add('hidden');
+  if (resultArea) resultArea.classList.add('hidden');
 
   try {
     const res = await safeFetch(`/aadhar/${encodeURIComponent(aadharNum)}?key=SHURU_33`);
@@ -541,29 +551,35 @@ async function doAadharLookup() {
       showAadharSuccess(data, aadharNum);
     }
   } catch (err) {
-    showAadharError('Cannot reach backend proxy. Make sure server.py is running on port 5000.');
+    showAadharError('Cannot reach backend proxy. Please try again.');
   } finally {
-    setLoading(aadharLookupBtn, false);
+    if (btnEl) setLoading(btnEl, false);
     resetCaptcha('aadhar');
   }
 }
 
 function showAadharError(msg) {
   const ra = document.getElementById('aadharResultArea');
+  if (!ra) return;
   ra.classList.remove('hidden');
-  document.getElementById('aadharErrorCard').classList.add('hidden');
+  const errCard = document.getElementById('aadharErrorCard');
+  if (errCard) errCard.classList.add('hidden');
   const card = document.getElementById('aadharSuccessCard');
-  card.classList.remove('hidden');
-  card.innerHTML = buildNotFoundCard(msg);
+  if (card) {
+    card.classList.remove('hidden');
+    card.innerHTML = buildNotFoundCard(msg);
+  }
 }
 
 function showAadharSuccess(data, searchedAadhar) {
   const ra = document.getElementById('aadharResultArea');
+  if (!ra) return;
   ra.classList.remove('hidden');
-  document.getElementById('aadharErrorCard').classList.add('hidden');
+  const errCard = document.getElementById('aadharErrorCard');
+  if (errCard) errCard.classList.add('hidden');
   
   const successCard = document.getElementById('aadharSuccessCard');
-  successCard.classList.remove('hidden');
+  if (successCard) successCard.classList.remove('hidden');
 
   const records = extractRecords(data.result);
   if (records.length === 0) {
