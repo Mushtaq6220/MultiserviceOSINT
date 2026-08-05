@@ -118,17 +118,34 @@ function toggleMobileMenu() {
 
 // ===== CONFIG =====
 function getServerOrigins() {
+  const origins = [];
+  if (window.location.origin && window.location.origin !== 'null') {
+    origins.push(window.location.origin);
+  }
   const currentHost = window.location.hostname || 'localhost';
-  const origins = [
-    `http://${currentHost}:5000`,
-    `http://127.0.0.1:5000`,
-    `http://localhost:5000`
-  ];
+  if (currentHost !== 'localhost' && currentHost !== '127.0.0.1') {
+    origins.push(`http://${currentHost}:5000`);
+    origins.push(`https://${currentHost}`);
+  }
+  origins.push('http://localhost:5000');
+  origins.push('http://127.0.0.1:5000');
   return [...new Set(origins)];
 }
 
 // Helper fetch with automatic origin fallback
 async function safeFetch(pathAndQuery) {
+  // If relative path, try direct fetch first (works on Render, custom domains, and mobile web browsers)
+  if (pathAndQuery.startsWith('/')) {
+    try {
+      const res = await fetch(pathAndQuery);
+      if (res.ok || res.status < 500) {
+        return res;
+      }
+    } catch (err) {
+      console.warn('Relative fetch failed, trying full origins fallback:', err);
+    }
+  }
+
   const origins = getServerOrigins();
   let lastError = null;
 
