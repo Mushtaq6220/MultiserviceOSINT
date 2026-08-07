@@ -87,6 +87,10 @@ def route_vehicle_page():
 def route_insta_page():
     return send_from_directory('.', 'insta.html')
 
+@app.route('/insta-info')
+def route_insta_info_page():
+    return send_from_directory('.', 'insta-info.html')
+
 @app.route('/bomber')
 def route_bomber_page():
     return send_from_directory('.', 'bomber.html')
