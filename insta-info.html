@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Insta Info - InfoCore OSINT</title>
-  <meta name="description" content="Instagram profile OSINT search, bio metadata, follower analytics and post insights.">
+  <meta name="description" content="Instagram profile OSINT lookup, follower analytics, bio metadata, and public activity insights.">
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -22,11 +22,11 @@
     <div class="glow-sphere sphere-2"></div>
   </div>
 
-  <!-- Header & Navigation -->
-  <header class="header">
-    <nav class="navbar">
-      <a href="/" class="brand">
-        <div class="brand-icon">
+  <!-- Floating Navigation Bar -->
+  <header class="navbar-wrapper">
+    <nav class="floating-navbar">
+      <a href="/" class="nav-brand">
+        <div class="nav-logo">
           <svg width="28" height="28" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="32" cy="18" r="11" fill="#0080FF" />
             <path d="M20 38C20 31.3726 25.3726 26 32 26C38.6274 26 44 31.3726 44 38V68C44 74.6274 38.6274 80 32 80C25.3726 80 20 74.6274 20 68V38Z" fill="#0080FF" />
@@ -68,7 +68,7 @@
               <span>Insta Saver</span>
             </a>
             <a href="/insta-info" class="dropdown-item active">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="17"/></svg>
               <span>Insta Info</span>
             </a>
             <a href="/github" class="dropdown-item">
@@ -168,27 +168,26 @@
   <main class="main-content">
     <div class="content-container">
 
-      <!-- Work In Progress Status Panel -->
+      <!-- INSTAGRAM PROFILE OSINT SECTION -->
       <section class="tool-panel">
         <a href="/" class="back-home-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
           <span>Back to Home</span>
         </a>
 
-        <div class="panel-header" style="text-align: center; margin-top: 20px;">
-          <div style="width: 64px; height: 64px; border-radius: 50%; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.2); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; color: var(--primary);">
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
-          </div>
+        <div class="panel-header">
           <h2>Instagram Profile Info (OSINT)</h2>
-          <p>Analyze Instagram profiles, follower stats, bio details & public activity.</p>
+          <p>Lookup Instagram profile metadata, bio links, follower metrics & account details.</p>
         </div>
 
-        <!-- Clean WIP Card -->
-        <div style="margin-top: 30px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 36px 24px; text-align: center;">
-          <span style="font-size: 0.78rem; font-weight: 700; padding: 4px 12px; border-radius: 20px; background: rgba(0, 128, 255, 0.1); color: var(--primary); border: 1px solid rgba(0, 128, 255, 0.2); text-transform: uppercase; letter-spacing: 0.5px;">Work In Progress</span>
-          <h3 style="font-size: 1.2rem; font-weight: 700; color: var(--text-main); margin-top: 14px; margin-bottom: 8px;">Instagram Profile Search is Under Development</h3>
-          <p style="font-size: 0.88rem; color: var(--text-muted); max-width: 480px; margin: 0 auto 20px; line-height: 1.6;">Our Instagram profile OSINT module is currently being calibrated for real-time profile lookup, bio metadata extraction, and follower analytics.</p>
-          <a href="/" class="btn btn-primary" style="display: inline-flex; width: auto; padding: 10px 24px;">Return to Home</a>
+        <!-- Clean Work In Progress Card -->
+        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
+          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
+            Work In Progress
+          </div>
+          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Instagram profile OSINT lookup is currently under active development.</p>
         </div>
       </section>
 
@@ -198,9 +197,9 @@
   <!-- Clean Footer -->
   <footer class="footer">
     <div class="footer-container">
-      <span>InfoCore &copy; 2026</span>
+      <span>InfoCore Intelligence Engine</span>
       <span class="footer-divider">•</span>
-      <span>OSINT & Utility Platform</span>
+      <span>Made by <strong>Mushtaq</strong></span>
     </div>
   </footer>
 

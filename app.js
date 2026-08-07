@@ -1245,6 +1245,37 @@ function doNetflixSubmit() {
   }, 500);
 }
 
+// ===== INSTA INFO SUBMIT HANDLER =====
+function handleInstaInfoSubmit(event) {
+  event.preventDefault();
+  const inputEl = document.getElementById('instaUsernameInput');
+  const captchaCb = document.getElementById('instaCaptcha');
+  const btnEl = document.getElementById('instaInfoSubmitBtn');
+  const noticeEl = document.getElementById('instaInfoNotice');
+
+  const val = inputEl ? inputEl.value.trim() : '';
+  if (!val) {
+    if (inputEl) shakeInput(inputEl);
+    return;
+  }
+
+  if (captchaCb && !captchaCb.checked) {
+    alert('Please verify the reCAPTCHA checkbox.');
+    return;
+  }
+
+  if (btnEl) setLoading(btnEl, true);
+
+  setTimeout(() => {
+    if (btnEl) setLoading(btnEl, false);
+    if (captchaCb) captchaCb.checked = false;
+    if (noticeEl) {
+      noticeEl.classList.remove('hidden');
+      noticeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }, 400);
+}
+
 // ===== NAVBAR DROPDOWN TOGGLE =====
 function toggleNavDropdown(event) {
   event.preventDefault();
