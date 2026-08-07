@@ -1245,6 +1245,167 @@ function doNetflixSubmit() {
   }, 500);
 }
 
+// ===== PAN CARD LOOKUP =====
+(function setupPanListeners() {
+  const panInput = document.getElementById('panInput');
+  const panClearBtn = document.getElementById('panClearBtn');
+  if (panInput) {
+    panInput.addEventListener('input', () => {
+      panInput.value = panInput.value.toUpperCase();
+      if (panClearBtn) panClearBtn.style.display = panInput.value.length > 0 ? 'flex' : 'none';
+    });
+    panInput.addEventListener('keydown', e => { if (e.key === 'Enter') doPanLookup(); });
+  }
+})();
+
+function clearPanInput() {
+  const panInput = document.getElementById('panInput');
+  const panClearBtn = document.getElementById('panClearBtn');
+  if (panInput) panInput.value = '';
+  if (panClearBtn) panClearBtn.style.display = 'none';
+  const ra = document.getElementById('panResultArea');
+  if (ra) ra.classList.add('hidden');
+  if (panInput) panInput.focus();
+}
+
+async function doPanLookup() {
+  const inputEl = document.getElementById('panInput');
+  const btnEl = document.getElementById('panLookupBtn');
+  if (!inputEl) return;
+
+  const pan = inputEl.value.trim().toUpperCase();
+  if (!pan) { shakeInput(inputEl); return; }
+
+  // Basic PAN format validation: 5 letters, 4 digits, 1 letter
+  if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(pan)) {
+    shakeInput(inputEl);
+    showPanError('Invalid PAN format. PAN must be like ABCDE1234F (5 letters, 4 digits, 1 letter).');
+    return;
+  }
+
+  if (!validateCaptcha('pan')) return;
+
+  if (btnEl) setLoading(btnEl, true);
+  const resultArea = document.getElementById('panResultArea');
+  if (resultArea) resultArea.classList.add('hidden');
+
+  try {
+    const res = await safeFetch(`/pan_lookup/${encodeURIComponent(pan)}`);
+    const data = await res.json();
+
+    if (data.status === 'success' && data.data) {
+      showPanSuccess(data, pan);
+    } else {
+      showPanError(data.message || `No PAN record found for '${pan}'.`);
+    }
+  } catch (err) {
+    showPanError(`Could not fetch details for '${pan}'. Please try again.`);
+  } finally {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('pan');
+  }
+}
+
+function showPanError(msg) {
+  const ra = document.getElementById('panResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('panErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const card = document.getElementById('panSuccessCard');
+  if (card) {
+    card.classList.remove('hidden');
+    card.innerHTML = buildNotFoundCard(msg);
+  }
+}
+
+function showPanSuccess(data, queryPan) {
+  const ra = document.getElementById('panResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('panErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const card = document.getElementById('panSuccessCard');
+  if (!card) return;
+  card.classList.remove('hidden');
+  renderPanCard(card, data.data, queryPan);
+}
+
+function renderPanCard(cardEl, d, queryPan) {
+  const name       = escHtml(d.customerName || (d.firstName + (d.middleName ? ' ' + d.middleName : '') + ' ' + d.lastName) || 'N/A');
+  const firstName  = escHtml(d.firstName || 'N/A');
+  const middleName = escHtml(d.middleName || '—');
+  const lastName   = escHtml(d.lastName || 'N/A');
+  const dob        = escHtml(d.dob || 'N/A');
+  const status     = escHtml(d.panStatus || 'N/A');
+  const pan        = escHtml(queryPan);
+  const avatarInitial = (d.firstName || d.customerName || 'P').charAt(0).toUpperCase();
+
+  const statusColor = status === 'VALID' ? '#22c55e' : '#ef4444';
+  const statusBg    = status === 'VALID' ? 'rgba(34,197,94,0.1)' : 'rgba(239,68,68,0.1)';
+  const statusBorder= status === 'VALID' ? 'rgba(34,197,94,0.3)' : 'rgba(239,68,68,0.3)';
+
+  cardEl.innerHTML = `
+    <div class="profile-card-simple">
+      <div class="profile-head-row">
+        <div class="avatar-circle">${avatarInitial}</div>
+        <div class="profile-main-info">
+          <div class="profile-name">${name}</div>
+          <div class="profile-subtext">PAN Card Holder</div>
+        </div>
+        <div style="margin-left:auto;">
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:${statusBg};border:1px solid ${statusBorder};border-radius:20px;color:${statusColor};font-weight:700;font-size:0.78rem;">
+            <span style="width:7px;height:7px;border-radius:50%;background:${statusColor};display:inline-block;"></span>
+            ${status}
+          </span>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">PAN Number</div>
+          <div class="info-val" style="font-family:monospace;letter-spacing:1.5px;font-weight:700;">${pan}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Full Name</div>
+          <div class="info-val">${name}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">First Name</div>
+          <div class="info-val">${firstName}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Middle Name</div>
+          <div class="info-val">${middleName}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Last Name</div>
+          <div class="info-val">${lastName}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">Date of Birth</div>
+          <div class="info-val">${dob}</div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-label">PAN Status</div>
+          <div class="info-val" style="color:${statusColor};font-weight:700;">${status}</div>
+        </div>
+      </div>
+
+      <div class="credits-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+        Telegram: @modsnew || @HUNTER_X_OSINT
+      </div>
+    </div>
+  `;
+}
+
 // ===== INSTA INFO SUBMIT HANDLER =====
 function handleInstaInfoSubmit(event) {
   event.preventDefault();

@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PAN Card Fetch — InfoCore</title>
-  <meta name="description" content="PAN Card info lookup utility on InfoCore." />
+  <meta name="description" content="PAN Card info lookup utility on InfoCore. Retrieve cardholder name, date of birth, and PAN status instantly." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -167,17 +167,75 @@
 
         <div class="panel-header">
           <h2>PAN Card Fetch</h2>
-          <p>Retrieve PAN verification details, cardholder name, and registration status.</p>
+          <p>Retrieve PAN verification details, cardholder name, date of birth and registration status.</p>
         </div>
 
-        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
-          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
-            Work In Progress
+        <!-- Search Card -->
+        <div class="card search-box">
+          <div class="form-group">
+            <label class="form-label" for="panInput">Enter PAN Number</label>
+            <div class="input-row">
+              <div class="input-field-wrapper">
+                <span class="field-icon">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                </span>
+                <input
+                  type="text"
+                  id="panInput"
+                  class="input-field"
+                  placeholder="e.g. ABCDE1234F"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="characters"
+                  spellcheck="false"
+                  maxlength="10"
+                />
+                <button class="clear-btn" id="panClearBtn" style="display:none;" onclick="clearPanInput()" title="Clear">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+              <button class="btn btn-primary" id="panLookupBtn" onclick="doPanLookup()">
+                <span>Fetch PAN</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </div>
           </div>
-          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">PAN Card lookup service is currently under active development.</p>
+
+          <!-- Official reCAPTCHA v2 Widget -->
+          <div class="real-recaptcha-widget" id="panCaptchaWidget">
+            <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('pan')">
+              <div class="recaptcha-checkbox" id="panCaptchaBox">
+                <div class="recaptcha-spinner hidden" id="panCaptchaSpinner"></div>
+                <svg class="recaptcha-checkmark hidden" id="panCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="recaptcha-text">I'm not a robot</span>
+            </div>
+            <div class="recaptcha-branding">
+              <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
+                <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
+                <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
+                <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
+                <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
+              </svg>
+              <div class="recaptcha-brand-name">reCAPTCHA</div>
+              <div class="recaptcha-brand-links">
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> -
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
+              </div>
+            </div>
+          </div>
+
+
         </div>
+
+        <!-- Result Area -->
+        <div id="panResultArea" class="hidden" style="margin-top: 16px;">
+          <div id="panErrorCard" class="hidden"></div>
+          <div id="panSuccessCard" class="card"></div>
+        </div>
+
       </section>
 
     </div>

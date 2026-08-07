@@ -24,6 +24,7 @@ AADHAAR_API_BASE = 'https://shuru-aadhar-awesom-ff-api.vercel.app/apis/aadhaar_i
 INSTA_API_BASE = 'https://r-bots-free-apis.co08.art/api/v1/api/igdl'
 BOMBER_API_URL = "https://vishal.lovestoblog.com/bomber4.php"
 TRUECALLER_API_BASE = 'https://x-trace-shuruu-truecaller-info.vercel.app/info'
+PAN_API_BASE = 'https://pan-info-two.vercel.app/pan-info'
 
 # Global dictionary to keep track of active bomber threads
 bomber_threads = {}
@@ -107,6 +108,30 @@ def truecaller_api(num):
     try:
         r = requests.get(url, timeout=12)
         return Response(r.content, status=r.status_code, content_type=r.headers.get('Content-Type', 'application/json'))
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/pan_lookup/<path:pan_num>')
+def pan_lookup_api(pan_num):
+    pan_clean = pan_num.strip().upper()
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    try:
+        url = f"{PAN_API_BASE}?pan={pan_clean}"
+        r = requests.get(url, headers=headers, timeout=15)
+        data = r.json()
+        if data.get('success') and data.get('data'):
+            return jsonify({
+                'status': 'success',
+                'pan': data.get('pan', pan_clean),
+                'data': data['data']
+            }), 200
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': f"No PAN record found for '{pan_clean}'."
+            }), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
 
