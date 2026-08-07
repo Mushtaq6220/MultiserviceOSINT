@@ -1400,7 +1400,7 @@ function renderPanCard(cardEl, d, queryPan) {
 
       <div class="credits-row">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
-        Telegram: @modsnew || @HUNTER_X_OSINT
+        Mushtaq_OSINT_DEV
       </div>
     </div>
   `;
