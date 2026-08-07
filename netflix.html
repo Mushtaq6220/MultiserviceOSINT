@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=4.1" />
+  <link rel="stylesheet" href="style.css?v=4.2" />
 </head>
 <body>
 
@@ -28,34 +28,45 @@
 
       <!-- Nav Links -->
       <div class="nav-pill-menu" id="navMenu">
-        <a href="/phone" class="nav-pill">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72z"/></svg>
-          Phone
-        </a>
-        <a href="/truecaller" class="nav-pill">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
-          Truecaller
-        </a>
-        <a href="/aadhar" class="nav-pill">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
-          Aadhaar
-        </a>
-        <a href="/vehicle" class="nav-pill">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          Vehicle
-        </a>
-        <a href="/insta" class="nav-pill">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-          Insta Saver
-        </a>
-        <a href="/bomber" class="nav-pill">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          Bomber
-        </a>
-        <a href="/netflix" class="nav-pill active">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-1 14.5v-9l6 4.5z"/></svg>
-          Netflix Cookie
-        </a>
+        <a href="/phone" class="nav-pill">Phone</a>
+        <a href="/aadhar" class="nav-pill">Aadhaar</a>
+        <a href="/pan" class="nav-pill">PAN Card</a>
+        <a href="/vehicle" class="nav-pill">Vehicle</a>
+        <a href="/bomber" class="nav-pill">Bomber</a>
+
+        <!-- Dynamic "More" Dropdown Menu -->
+        <div class="nav-dropdown-wrapper">
+          <button class="nav-pill dropdown-trigger-btn active" onclick="toggleNavDropdown(event)">
+            <span>More</span>
+            <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </button>
+          <div class="nav-dropdown-menu">
+            <a href="/truecaller" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+              <span>Truecaller Info</span>
+            </a>
+            <a href="/upi" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+              <span>UPI Info</span>
+            </a>
+            <a href="/email" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <span>Email Info</span>
+            </a>
+            <a href="/insta" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
+              <span>Insta Info</span>
+            </a>
+            <a href="/github" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+              <span>GitHub Info</span>
+            </a>
+            <a href="/netflix" class="dropdown-item active">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-1 14.5v-9l6 4.5z"/></svg>
+              <span>Netflix Cookie</span>
+            </a>
+          </div>
+        </div>
       </div>
 
       <!-- Controls Right -->
@@ -74,34 +85,17 @@
     <!-- Mobile Navigation Sheet Overlay -->
     <div class="mobile-nav-sheet" id="mobileSheet">
       <div class="sheet-grid">
-        <a href="/phone" class="sheet-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 2.18h3a2 2 0 0 1 2 1.72z"/></svg>
-          <span>Phone Lookup</span>
-        </a>
-        <a href="/truecaller" class="sheet-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
-          <span>Truecaller Info</span>
-        </a>
-        <a href="/aadhar" class="sheet-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/></svg>
-          <span>Aadhaar Info</span>
-        </a>
-        <a href="/vehicle" class="sheet-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-          <span>Vehicle Info</span>
-        </a>
-        <a href="/insta" class="sheet-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
-          <span>Insta Saver</span>
-        </a>
-        <a href="/bomber" class="sheet-item">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-          <span>Bomber</span>
-        </a>
-        <a href="/netflix" class="sheet-item active">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm-1 14.5v-9l6 4.5z"/></svg>
-          <span>Netflix Cookie</span>
-        </a>
+        <a href="/phone" class="sheet-item"><span>Phone Lookup</span></a>
+        <a href="/truecaller" class="sheet-item"><span>Truecaller Info</span></a>
+        <a href="/aadhar" class="sheet-item"><span>Aadhaar Info</span></a>
+        <a href="/pan" class="sheet-item"><span>PAN Card Fetch</span></a>
+        <a href="/upi" class="sheet-item"><span>UPI Info</span></a>
+        <a href="/email" class="sheet-item"><span>Email Info</span></a>
+        <a href="/insta" class="sheet-item"><span>Insta Info</span></a>
+        <a href="/github" class="sheet-item"><span>GitHub Info</span></a>
+        <a href="/vehicle" class="sheet-item"><span>Vehicle Info</span></a>
+        <a href="/bomber" class="sheet-item"><span>Bomber</span></a>
+        <a href="/netflix" class="sheet-item active"><span>Netflix Cookie</span></a>
       </div>
     </div>
   </header>
@@ -122,19 +116,100 @@
           <p>Tools & utilities for cookie validation, cleaning, TV activation, and NF token links.</p>
         </div>
 
-        <!-- Dynamic Features Grid Overview -->
-        <div class="netflix-grid">
+        <!-- Netflix Cookie Input Box Card -->
+        <div class="card search-box">
+          <div class="form-group">
+            <label for="netflixCookieInput">Enter your Netflix cookies</label>
+            <textarea id="netflixCookieInput" class="netflix-cookie-textarea" placeholder="Paste your Netflix cookies here (JSON format or raw Netscape text)..."></textarea>
+          </div>
+
+          <!-- Feature Selection Menu (Select any one or multiple) -->
+          <div class="form-group" style="margin-top: 14px;">
+            <label>Select Features to Process</label>
+            <div class="nf-feature-selector-grid">
+              <div class="nf-pill-option active" data-feature="checker" onclick="toggleNetflixFeature(this)">
+                <div class="nf-pill-checkbox">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="nf-pill-text">Cookie Checker</span>
+              </div>
+
+              <div class="nf-pill-option" data-feature="cleaner" onclick="toggleNetflixFeature(this)">
+                <div class="nf-pill-checkbox">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="nf-pill-text">Cookie Cleaner (Txt to Zip)</span>
+              </div>
+
+              <div class="nf-pill-option" data-feature="tv_activation" onclick="toggleNetflixFeature(this)">
+                <div class="nf-pill-checkbox">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="nf-pill-text">Cookie To TV Activation</span>
+              </div>
+
+              <div class="nf-pill-option" data-feature="token_link" onclick="toggleNetflixFeature(this)">
+                <div class="nf-pill-checkbox">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </div>
+                <span class="nf-pill-text">Cookie To NF Token Linkup</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Official reCAPTCHA v2 Widget -->
+          <div class="real-recaptcha-widget" id="netflixCaptchaWidget">
+            <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('netflix')">
+              <div class="recaptcha-checkbox" id="netflixCaptchaBox">
+                <div class="recaptcha-spinner hidden" id="netflixCaptchaSpinner"></div>
+                <svg class="recaptcha-checkmark hidden" id="netflixCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="recaptcha-text">I'm not a robot</span>
+            </div>
+            <div class="recaptcha-branding">
+              <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
+                <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
+                <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
+                <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
+                <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
+              </svg>
+              <div class="recaptcha-brand-name">reCAPTCHA</div>
+              <div class="recaptcha-brand-links">
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> - 
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Button -->
+          <div style="margin-top: 18px;">
+            <button class="btn btn-primary" id="netflixSubmitBtn" onclick="doNetflixSubmit()" style="width: 100%; height: 44px;">
+              <span>Submit & Process Cookies</span>
+              <span class="btn-spinner"></span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Result / Output Area -->
+        <div id="netflixResultArea" class="result-area hidden">
+          <div id="netflixSuccessCard" class="card result-card"></div>
+        </div>
+
+        <!-- Compact Downside Features Overview Grid -->
+        <div class="netflix-grid compact">
           <!-- Card 1: Cookie Checker -->
           <div class="nf-feature-card">
             <div class="nf-card-top">
               <div class="nf-icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 12 14 22 4"/></svg>
               </div>
               <span class="nf-tag">Validation</span>
             </div>
             <div class="nf-card-body">
               <h3 class="nf-card-title">Cookie Checker</h3>
-              <p class="nf-card-desc">Verify session validity and subscription tier status.</p>
+              <p class="nf-card-desc">Verify session validity & subscription tier status.</p>
             </div>
           </div>
 
@@ -142,13 +217,13 @@
           <div class="nf-feature-card">
             <div class="nf-card-top">
               <div class="nf-icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
               </div>
               <span class="nf-tag">Txt to Zip</span>
             </div>
             <div class="nf-card-body">
               <h3 class="nf-card-title">Cookie Cleaner</h3>
-              <p class="nf-card-desc">Format and clean cookie text files into structured ZIP archives.</p>
+              <p class="nf-card-desc">Format & clean text files into structured ZIP archives.</p>
             </div>
           </div>
 
@@ -156,13 +231,13 @@
           <div class="nf-feature-card">
             <div class="nf-card-top">
               <div class="nf-icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="7" width="20" height="15" rx="2" ry="2"/><polyline points="17 2 12 7 7 2"/></svg>
               </div>
               <span class="nf-tag">Smart TV</span>
             </div>
             <div class="nf-card-body">
-              <h3 class="nf-card-title">Cookie To TV Activation</h3>
-              <p class="nf-card-desc">Generate TV activation code pairs directly from session cookies.</p>
+              <h3 class="nf-card-title">TV Activation</h3>
+              <p class="nf-card-desc">Generate TV activation code pairs directly from cookies.</p>
             </div>
           </div>
 
@@ -170,25 +245,15 @@
           <div class="nf-feature-card">
             <div class="nf-card-top">
               <div class="nf-icon-box">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
               </div>
               <span class="nf-tag">Auth Link</span>
             </div>
             <div class="nf-card-body">
-              <h3 class="nf-card-title">Cookie To NF Token Linkup</h3>
-              <p class="nf-card-desc">Convert active cookies into direct NF token authentication links.</p>
+              <h3 class="nf-card-title">Token Linkup</h3>
+              <p class="nf-card-desc">Convert active cookies into direct NF token auth links.</p>
             </div>
           </div>
-        </div>
-
-        <!-- Work In Progress / Soon Available Card -->
-        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
-          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
-            Work In Progress
-          </div>
-          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">This app feature will be available soon. System under active development.</p>
         </div>
 
       </section>

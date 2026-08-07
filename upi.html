@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aadhaar Info Lookup — InfoCore</title>
-  <meta name="description" content="Aadhaar Info Lookup utility on InfoCore. Retrieve father name, UID linked profiles, and registered address." />
+  <title>UPI Info — InfoCore</title>
+  <meta name="description" content="UPI VPA address lookup and account verification utility on InfoCore." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=3.9" />
+  <link rel="stylesheet" href="style.css?v=4.3" />
 </head>
 <body>
 
@@ -29,14 +29,14 @@
       <!-- Nav Links -->
       <div class="nav-pill-menu" id="navMenu">
         <a href="/phone" class="nav-pill">Phone</a>
-        <a href="/aadhar" class="nav-pill active">Aadhaar</a>
+        <a href="/aadhar" class="nav-pill">Aadhaar</a>
         <a href="/pan" class="nav-pill">PAN Card</a>
         <a href="/vehicle" class="nav-pill">Vehicle</a>
         <a href="/bomber" class="nav-pill">Bomber</a>
 
         <!-- Dynamic "More" Dropdown Menu -->
         <div class="nav-dropdown-wrapper">
-          <button class="nav-pill dropdown-trigger-btn" onclick="toggleNavDropdown(event)">
+          <button class="nav-pill dropdown-trigger-btn active" onclick="toggleNavDropdown(event)">
             <span>More</span>
             <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
@@ -45,7 +45,7 @@
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
               <span>Truecaller Info</span>
             </a>
-            <a href="/upi" class="dropdown-item">
+            <a href="/upi" class="dropdown-item active">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
               <span>UPI Info</span>
             </a>
@@ -87,9 +87,9 @@
       <div class="sheet-grid">
         <a href="/phone" class="sheet-item"><span>Phone Lookup</span></a>
         <a href="/truecaller" class="sheet-item"><span>Truecaller Info</span></a>
-        <a href="/aadhar" class="sheet-item active"><span>Aadhaar Info</span></a>
+        <a href="/aadhar" class="sheet-item"><span>Aadhaar Info</span></a>
         <a href="/pan" class="sheet-item"><span>PAN Card Fetch</span></a>
-        <a href="/upi" class="sheet-item"><span>UPI Info</span></a>
+        <a href="/upi" class="sheet-item active"><span>UPI Info</span></a>
         <a href="/email" class="sheet-item"><span>Email Info</span></a>
         <a href="/insta" class="sheet-item"><span>Insta Info</span></a>
         <a href="/github" class="sheet-item"><span>GitHub Info</span></a>
@@ -104,7 +104,7 @@
   <main class="main-content">
     <div class="content-container">
 
-      <!-- ===== AADHAAR LOOKUP SECTION ===== -->
+      <!-- ===== UPI INFO SECTION ===== -->
       <section class="tool-panel">
         <a href="/" class="back-home-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -112,60 +112,17 @@
         </a>
 
         <div class="panel-header">
-          <h2>Aadhaar Info Lookup</h2>
-          <p>Retrieve linked records, father name, and registered address info.</p>
+          <h2>UPI Info Lookup</h2>
+          <p>Verify UPI VPA address, account holder name, and banking handle info.</p>
         </div>
 
-        <div class="card search-box">
-          <div class="form-group">
-            <label for="aadharInput">Aadhaar Number (12 Digits)</label>
-            <div class="input-row">
-              <div class="input-field-wrapper">
-                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="7" y1="8" x2="17" y2="8"/><line x1="7" y1="12" x2="13" y2="12"/><line x1="7" y1="16" x2="11" y2="16"/></svg>
-                <input type="text" id="aadharInput" placeholder="Enter 12-digit Aadhaar number (e.g. 293649586679)" maxlength="14" autocomplete="off" />
-                <button class="clear-btn" id="aadharClearBtn" title="Clear input">&times;</button>
-              </div>
-              <button class="btn btn-primary" id="aadharLookupBtn" onclick="doAadharLookup()">
-                <span>Lookup</span>
-                <span class="btn-spinner"></span>
-              </button>
-            </div>
-
-            <!-- Official reCAPTCHA v2 Widget -->
-            <div class="real-recaptcha-widget" id="aadharCaptchaWidget">
-              <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('aadhar')">
-                <div class="recaptcha-checkbox" id="aadharCaptchaBox">
-                  <div class="recaptcha-spinner hidden" id="aadharCaptchaSpinner"></div>
-                  <svg class="recaptcha-checkmark hidden" id="aadharCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="20 6 9 17 4 12"></polyline>
-                  </svg>
-                </div>
-                <span class="recaptcha-text">I'm not a robot</span>
-              </div>
-              <div class="recaptcha-branding">
-                <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
-                  <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
-                  <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
-                  <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
-                  <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
-                </svg>
-                <div class="recaptcha-brand-name">reCAPTCHA</div>
-                <div class="recaptcha-brand-links">
-                  <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> - 
-                  <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
-                </div>
-              </div>
-            </div>
-
+        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
+          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
+            Work In Progress
           </div>
-        </div>
-
-        <div id="aadharResultArea" class="result-area hidden">
-          <div id="aadharErrorCard" class="alert alert-error hidden">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-            <span id="aadharErrorDesc">No Aadhaar info found.</span>
-          </div>
-          <div id="aadharSuccessCard" class="card result-card hidden"></div>
+          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
+          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">UPI Info verification service is currently under active development.</p>
         </div>
       </section>
 

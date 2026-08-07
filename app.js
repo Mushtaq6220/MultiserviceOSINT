@@ -276,6 +276,30 @@ function extractRecords(result) {
   return [];
 }
 
+// ===== AADHAAR LOOKUP =====
+function setupAadharListeners() {
+  const aadharInput = document.getElementById('aadharInput');
+  const aadharClearBtn = document.getElementById('aadharClearBtn');
+  if (aadharInput && aadharClearBtn) {
+    aadharInput.addEventListener('input', () => {
+      aadharClearBtn.classList.toggle('visible', aadharInput.value.length > 0);
+    });
+    aadharClearBtn.addEventListener('click', () => {
+      aadharInput.value = '';
+      aadharClearBtn.classList.remove('visible');
+      const ra = document.getElementById('aadharResultArea');
+      if (ra) ra.classList.add('hidden');
+      aadharInput.focus();
+    });
+    aadharInput.addEventListener('keydown', e => { if (e.key === 'Enter') doAadharLookup(); });
+  }
+}
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', setupAadharListeners);
+} else {
+  setupAadharListeners();
+}
+
 async function doAadharLookup() {
   const inputEl = document.getElementById('aadharInput');
   const btnEl = document.getElementById('aadharLookupBtn');
@@ -315,11 +339,7 @@ async function doAadharLookup() {
     let records = [];
     if (data) {
       if (data.result) {
-        if (typeof data.result === 'object' && data.result['0']) {
-          records = [data.result['0']];
-        } else {
-          records = extractRecords(data.result);
-        }
+        records = extractRecords(data.result);
       }
       if (records.length === 0 && data.data) records = extractRecords(data.data);
       if (records.length === 0 && (data.name || data.fname || data.aadhar || data.num)) records = [data];
@@ -1164,4 +1184,85 @@ document.addEventListener('click', function(e) {
   if (modal && e.target === modal) {
     closeServerModal();
   }
+});
+
+// ===== NETFLIX COOKIE SUITE FRONTEND INTERACTION =====
+function toggleNetflixFeature(el) {
+  if (el) el.classList.toggle('active');
+}
+
+function doNetflixSubmit() {
+  const cookieInput = document.getElementById('netflixCookieInput');
+  const btnEl = document.getElementById('netflixSubmitBtn');
+  if (!cookieInput) return;
+
+  const cookieVal = cookieInput.value.trim();
+  if (!cookieVal) {
+    shakeInput(cookieInput);
+    return;
+  }
+
+  if (!validateCaptcha('netflix')) return;
+
+  // Get active selected features
+  const activePills = document.querySelectorAll('.nf-pill-option.active');
+  const selectedFeatures = Array.from(activePills).map(p => p.querySelector('.nf-pill-text')?.textContent || '').filter(Boolean);
+
+  if (selectedFeatures.length === 0) {
+    alert('Please select at least one feature to process.');
+    return;
+  }
+
+  if (btnEl) setLoading(btnEl, true);
+
+  setTimeout(() => {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('netflix');
+
+    const resultArea = document.getElementById('netflixResultArea');
+    const successCard = document.getElementById('netflixSuccessCard');
+    if (resultArea && successCard) {
+      resultArea.classList.remove('hidden');
+      successCard.classList.remove('hidden');
+
+      // Validate JSON format
+      let isJson = false;
+      try {
+        JSON.parse(cookieVal);
+        isJson = true;
+      } catch (e) {
+        isJson = false;
+      }
+
+      if (!isJson) {
+        successCard.innerHTML = buildNotFoundCard("Invalid JSON cookie format! Please paste valid JSON formatted Netflix cookies.");
+        return;
+      }
+
+      // If valid JSON, backend is under maintenance / not ready yet error popup
+      successCard.innerHTML = buildNotFoundCard("Backend service for Netflix Cookie Suite is under maintenance. Backend integration is not ready yet.");
+    }
+  }, 500);
+}
+
+// ===== NAVBAR DROPDOWN TOGGLE =====
+function toggleNavDropdown(event) {
+  event.preventDefault();
+  event.stopPropagation();
+  const wrapper = event.currentTarget.closest('.nav-dropdown-wrapper');
+  if (wrapper) {
+    document.querySelectorAll('.nav-dropdown-wrapper.open').forEach(other => {
+      if (other !== wrapper) other.classList.remove('open');
+    });
+    wrapper.classList.toggle('open');
+  }
+}
+
+document.addEventListener('click', function(e) {
+  const wrappers = document.querySelectorAll('.nav-dropdown-wrapper');
+  wrappers.forEach(w => {
+    if (!w.contains(e.target)) {
+      w.classList.remove('open');
+    }
+  });
 });

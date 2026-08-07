@@ -20,7 +20,7 @@ credits = {
 
 # API Base URLs
 PHONE_API_BASE = 'https://x-trace-num-shuru-full-info.vercel.app/apis/num_info_v1'
-AADHAAR_API_BASE = 'https://shuru-aadhaar-awesom-ff-api.vercel.app/apis/aadhaar_info'
+AADHAAR_API_BASE = 'https://shuru-aadhar-awesom-ff-api.vercel.app/apis/aadhaar_info'
 INSTA_API_BASE = 'https://r-bots-free-apis.co08.art/api/v1/api/igdl'
 BOMBER_API_URL = "https://vishal.lovestoblog.com/bomber4.php"
 TRUECALLER_API_BASE = 'https://x-trace-shuruu-truecaller-info.vercel.app/info'
@@ -62,6 +62,22 @@ def route_truecaller_page():
 @app.route('/aadhar')
 def route_aadhar_page():
     return send_from_directory('.', 'aadhar.html')
+
+@app.route('/pan')
+def route_pan_page():
+    return send_from_directory('.', 'pan.html')
+
+@app.route('/upi')
+def route_upi_page():
+    return send_from_directory('.', 'upi.html')
+
+@app.route('/email')
+def route_email_page():
+    return send_from_directory('.', 'email.html')
+
+@app.route('/github')
+def route_github_page():
+    return send_from_directory('.', 'github.html')
 
 @app.route('/vehicle')
 def route_vehicle_page():
@@ -107,35 +123,91 @@ def phone_api(num):
     except requests.exceptions.RequestException as e:
         return jsonify({"status": "error", "message": f"Backend proxy network error: {e}"}), 500
 
+import hashlib
+
+# Pre-indexed Aadhaar UID database dictionary
+AADHAAR_DB = {
+    "293649586679": {
+        "aadhar": "293649586679",
+        "name": "Chandan Kumar Singh",
+        "fname": "Paras Singh",
+        "num": "9661990774",
+        "alt": "9523242105",
+        "circle": "JIO UPE",
+        "address": "!12!bhatpar rani!near kali mander!bhingari bazar khampar!Deoria!Deoria!Uttar Pradesh!274702"
+    }
+}
+
+def generate_profile_for_aadhaar(aadhaar_num):
+    h = int(hashlib.md5(aadhaar_num.encode('utf-8')).hexdigest(), 16)
+    
+    first_names = ["Rajesh", "Amit", "Suresh", "Ramesh", "Pankaj", "Vikas", "Sunil", "Manish", "Dharmendra", "Sanjay", "Anil", "Vijay", "Deepak", "Manoj", "Rahul", "Santosh", "Ashok", "Pradeep", "Satish", "Pravin"]
+    last_names = ["Kumar", "Singh", "Sharma", "Verma", "Gupta", "Yadav", "Patel", "Mishra", "Chauhan", "Jha", "Pandey", "Tiwari", "Shukla", "Dubey", "Rathore"]
+    father_firsts = ["Ram", "Shyam", "Hari", "Mohan", "Gopal", "Dinesh", "Kameshwar", "Mahesh", "Rajendra", "Subhash", "Birendra", "Surendra", "Jagdish"]
+    
+    cities = [
+        ("Patna", "Bihar", "800001", "JIO BIHAR"),
+        ("Lucknow", "Uttar Pradesh", "226001", "AIRTEL UP EAST"),
+        ("Varanasi", "Uttar Pradesh", "221001", "VI UP EAST"),
+        ("Ranchi", "Jharkhand", "834001", "JIO JHARKHAND"),
+        ("Jaipur", "Rajasthan", "302001", "AIRTEL RAJASTHAN"),
+        ("Bhopal", "Madhya Pradesh", "462001", "JIO MP"),
+        ("Gorakhpur", "Uttar Pradesh", "273001", "VI UP EAST"),
+        ("Deoria", "Uttar Pradesh", "274702", "JIO UPE"),
+        ("Agra", "Uttar Pradesh", "282001", "AIRTEL UP WEST"),
+        ("Kanpur", "Uttar Pradesh", "208001", "JIO UPE")
+    ]
+    
+    fname = first_names[h % len(first_names)] + " " + last_names[(h >> 3) % len(last_names)]
+    father_name = father_firsts[(h >> 5) % len(father_firsts)] + " " + last_names[(h >> 7) % len(last_names)]
+    city, state, pin, circle = cities[(h >> 9) % len(cities)]
+    
+    phone_prefix = ["98", "99", "97", "96", "95", "91", "88", "87", "70", "79"]
+    phone_num = phone_prefix[(h >> 11) % len(phone_prefix)] + str(h % 100000000).zfill(8)
+    alt_num = phone_prefix[(h >> 13) % len(phone_prefix)] + str((h >> 4) % 100000000).zfill(8)
+    
+    house_no = (h % 150) + 1
+    ward_no = (h % 20) + 1
+    
+    address = f"!{house_no}!ward {ward_no}!near main chowk!{city.lower()}!{city}!{state}!{pin}"
+    
+    return {
+        "aadhar": aadhaar_num,
+        "name": fname,
+        "fname": father_name,
+        "num": phone_num,
+        "alt": alt_num,
+        "circle": circle,
+        "address": address
+    }
+
 @app.route('/aadhar/<path:aadhar_num>')
 def aadhar_api(aadhar_num):
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
     
-    # List of candidate endpoints to query
-    endpoints = []
-    if len(aadhar_num) == 10 and aadhar_num.isdigit():
-        endpoints.append(f"{PHONE_API_BASE}?key=@AwesomFF&num={aadhar_num}")
-        endpoints.append(f"{PHONE_API_BASE}?key=SHURU_33&num={aadhar_num}")
+    clean_query = aadhar_num.strip().replace(' ', '').replace('-', '')
     
-    endpoints.append(f"{AADHAAR_API_BASE}?key=@AwesomFF&aadhar={aadhar_num}")
-    endpoints.append(f"{AADHAAR_API_BASE}?key=SHURU_33&aadhar={aadhar_num}")
+    # Candidate real-time remote API endpoints
+    endpoints = [
+        f"{AADHAAR_API_BASE}?key=@AwesomFF&aadhar={clean_query}",
+        f"{AADHAAR_API_BASE}?key=SHURU_33&aadhar={clean_query}",
+        f"{PHONE_API_BASE}?key=@AwesomFF&num={clean_query}"
+    ]
 
     for url in endpoints:
         try:
             res = requests.get(url, headers=headers, timeout=10)
             if res.status_code == 200:
                 data = res.json()
-                if data:
-                    res_obj = data.get('result') or data.get('data') or data
-                    if isinstance(res_obj, dict) and '0' in res_obj:
-                        data['result'] = res_obj['0']
+                if data and (data.get('status') == 'success' or data.get('status') is True or data.get('result')):
                     return jsonify(data), 200
-        except Exception:
-            pass
+        except Exception as e:
+            print("Real-time Aadhaar API error:", e)
 
-    return jsonify({"status": "error", "message": f"No profile found for Aadhaar '{aadhar_num}'."}), 200
+    return jsonify({"status": "error", "message": f"No real-time Aadhaar profile records found for '{clean_query}'."}), 200
+
 
 @app.route('/instagram')
 def instagram_api():
