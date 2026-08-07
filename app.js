@@ -1266,3 +1266,17 @@ document.addEventListener('click', function(e) {
     }
   });
 });
+
+// ===== MOBILE MORE ACCORDION TOGGLE =====
+function toggleMobileMore(event) {
+  if (event) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+  const section = document.querySelector('.mobile-more-section');
+  const submenu = document.getElementById('mobileMoreSubmenu');
+  if (section && submenu) {
+    section.classList.toggle('open');
+    submenu.classList.toggle('hidden');
+  }
+}
