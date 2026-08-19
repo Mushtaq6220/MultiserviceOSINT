@@ -1250,6 +1250,155 @@ function doNetflixSubmit() {
     }
   }, 500);
 }
+// ===== EMAIL LEAK LOOKUP =====
+(function setupEmailListeners() {
+  const emailInput   = document.getElementById('emailInput');
+  const emailClearBtn = document.getElementById('emailClearBtn');
+  if (!emailInput) return;
+  emailInput.addEventListener('input', () => {
+    if (emailClearBtn) emailClearBtn.style.display = emailInput.value.length > 0 ? 'inline-flex' : 'none';
+  });
+  emailInput.addEventListener('keydown', e => { if (e.key === 'Enter') doEmailLookup(); });
+  if (emailClearBtn) {
+    emailClearBtn.style.display = 'none';
+    emailClearBtn.addEventListener('click', () => {
+      emailInput.value = '';
+      emailClearBtn.style.display = 'none';
+      const ra = document.getElementById('emailResultArea');
+      if (ra) ra.classList.add('hidden');
+      emailInput.focus();
+    });
+  }
+})();
+
+async function doEmailLookup() {
+  const inputEl = document.getElementById('emailInput');
+  const btnEl   = document.getElementById('emailLookupBtn');
+  if (!inputEl) return;
+
+  const email = inputEl.value.trim();
+  if (!email) { shakeInput(inputEl); return; }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    shakeInput(inputEl);
+    showEmailError('Please enter a valid email address.');
+    return;
+  }
+  if (!validateCaptcha('email')) return;
+
+  if (btnEl) setLoading(btnEl, true);
+  const ra = document.getElementById('emailResultArea');
+  if (ra) ra.classList.add('hidden');
+
+  try {
+    const res  = await safeFetch(`/email_lookup?query=${encodeURIComponent(email)}`);
+    const data = await res.json();
+
+    if (data.status === 'success' && data.sources) {
+      showEmailSuccess(data, email);
+    } else {
+      showEmailError(data.message || `No breach records found for '${email}'.`);
+    }
+  } catch (err) {
+    showEmailError(`Could not fetch breach data for '${email}'. Please try again.`);
+  } finally {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('email');
+  }
+}
+
+function showEmailError(msg) {
+  const ra = document.getElementById('emailResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('emailErrorCard');
+  const errDesc = document.getElementById('emailErrorDesc');
+  const succCard = document.getElementById('emailSuccessCard');
+  if (errCard)  errCard.classList.remove('hidden');
+  if (errDesc)  errDesc.textContent = msg;
+  if (succCard) succCard.innerHTML = '';
+}
+
+function showEmailSuccess(data, email) {
+  const ra = document.getElementById('emailResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard  = document.getElementById('emailErrorCard');
+  const succCard = document.getElementById('emailSuccessCard');
+  if (errCard) errCard.classList.add('hidden');
+  if (!succCard) return;
+  renderEmailCard(succCard, data.sources, email);
+}
+
+function renderEmailCard(container, sources, email) {
+  const sourceKeys = Object.keys(sources);
+  const count = sourceKeys.length;
+
+  const breachCards = sourceKeys.map((key, idx) => {
+    const src = sources[key];
+    const title = escHtml(src.title || key);
+    const desc  = escHtml(src.description || '');
+    const records = Array.isArray(src.records) ? src.records : [src.records || {}];
+
+    const rowsHtml = records.map(rec => {
+      return Object.entries(rec).map(([field, val]) => {
+        if (!val || val === 'null') return '';
+        return `
+          <div class="info-item">
+            <div class="info-label">${escHtml(field)}</div>
+            <div class="info-val" style="${field.toLowerCase().includes('password') ? 'font-family:monospace;color:#ef4444;' : ''}">${escHtml(String(val))}</div>
+          </div>`;
+      }).join('');
+    }).join('');
+
+    const isFirst = idx === 0;
+    return `
+      <div class="breach-card card" style="margin-bottom:10px;">
+        <div class="breach-header" onclick="toggleBreachCard(this)" style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:14px 16px;">
+          <div style="width:34px;height:34px;border-radius:50%;background:rgba(0,128,255,0.12);border:1px solid rgba(0,128,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">⚠️</div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-weight:700;font-size:0.95rem;color:var(--text-primary);">${title}</div>
+            <div style="font-size:0.78rem;color:var(--text-secondary);margin-top:2px;">${records.length} record${records.length > 1 ? 's' : ''} found</div>
+          </div>
+          <svg class="breach-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="transition:transform 0.2s;transform:${isFirst ? 'rotate(180deg)' : 'rotate(0deg)'}"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
+        <div class="breach-body" style="display:${isFirst ? 'block' : 'none'};padding:0 16px 14px;">
+          ${desc ? `<div style="font-size:0.78rem;color:var(--text-secondary);margin-bottom:12px;line-height:1.5;padding:8px 10px;background:rgba(255,255,255,0.03);border-radius:6px;border-left:2px solid rgba(0,128,255,0.3);">${desc}</div>` : ''}
+          <div class="info-grid">${rowsHtml}</div>
+        </div>
+      </div>`;
+  }).join('');
+
+  container.innerHTML = `
+    <div class="profile-card-simple" style="margin-bottom:14px;">
+      <div class="profile-head-row">
+        <div class="avatar-circle" style="background:rgba(239,68,68,0.15);border:1.5px solid rgba(239,68,68,0.3);color:#ef4444;">⚠</div>
+        <div class="profile-main-info">
+          <div class="profile-name">${escHtml(email)}</div>
+          <div class="profile-subtext">Found in <strong style="color:#ef4444;">${count}</strong> breach source${count !== 1 ? 's' : ''}</div>
+        </div>
+        <div style="margin-left:auto;">
+          <span style="display:inline-flex;align-items:center;gap:6px;padding:4px 12px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);border-radius:20px;color:#ef4444;font-weight:700;font-size:0.78rem;">
+            <span style="width:7px;height:7px;border-radius:50%;background:#ef4444;display:inline-block;"></span>
+            LEAKED
+          </span>
+        </div>
+      </div>
+      <div class="credits-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+        Mushtaq_OSINT_DEV
+      </div>
+    </div>
+    ${breachCards}
+  `;
+}
+
+function toggleBreachCard(headerEl) {
+  const body    = headerEl.nextElementSibling;
+  const chevron = headerEl.querySelector('.breach-chevron');
+  const isOpen  = body.style.display !== 'none';
+  body.style.display    = isOpen ? 'none' : 'block';
+  chevron.style.transform = isOpen ? 'rotate(0deg)' : 'rotate(180deg)';
+}
 
 // ===== PAN CARD LOOKUP =====
 (function setupPanListeners() {

@@ -24,7 +24,8 @@ AADHAAR_API_BASE = 'https://shuru-aadhar-awesom-ff-api.vercel.app/apis/aadhaar_i
 INSTA_API_BASE = 'https://r-bots-free-apis.co08.art/api/v1/api/igdl'
 BOMBER_API_URL = "https://vishal.lovestoblog.com/bomber4.php"
 TRUECALLER_API_BASE = 'https://x-trace-shuruu-truecaller-info.vercel.app/info'
-PAN_API_BASE = 'https://pan-info-two.vercel.app/pan-info'
+PAN_API_BASE = 'https://rohithost.myvipsite.fun/api/api.php'
+EMAIL_LEAK_API_BASE = 'https://rohithost.myvipsite.fun/api/api.php'
 
 # Global dictionary to keep track of active bomber threads
 bomber_threads = {}
@@ -118,19 +119,50 @@ def pan_lookup_api(pan_num):
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
     try:
-        url = f"{PAN_API_BASE}?pan={pan_clean}"
+        url = f"{PAN_API_BASE}?service=pan-info&key=Rohit&pan={pan_clean}"
         r = requests.get(url, headers=headers, timeout=15)
         data = r.json()
-        if data.get('success') and data.get('data'):
+        # New API wraps inner data under data.data
+        inner = data.get('data', {})
+        pan_data = inner.get('data') if isinstance(inner.get('data'), dict) else inner
+        if data.get('success') and pan_data:
             return jsonify({
                 'status': 'success',
-                'pan': data.get('pan', pan_clean),
-                'data': data['data']
+                'pan': inner.get('pan', pan_clean),
+                'data': pan_data
             }), 200
         else:
             return jsonify({
                 'status': 'error',
                 'message': f"No PAN record found for '{pan_clean}'."
+            }), 200
+    except Exception as e:
+        return jsonify({'status': 'error', 'message': str(e)}), 500
+
+@app.route('/email_lookup')
+def email_lookup_api():
+    query = request.args.get('query', '').strip()
+    if not query:
+        return jsonify({'status': 'error', 'message': 'Email query is required.'}), 400
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    try:
+        url = f"{EMAIL_LEAK_API_BASE}?service=leak-info-api&key=Rohit&query={requests.utils.quote(query)}"
+        r = requests.get(url, headers=headers, timeout=20)
+        data = r.json()
+        inner = data.get('data', {})
+        leak_data = inner.get('data') if isinstance(inner, dict) and 'data' in inner else inner
+        if data.get('success') and leak_data:
+            return jsonify({
+                'status': 'success',
+                'query': inner.get('query', query),
+                'sources': leak_data
+            }), 200
+        else:
+            return jsonify({
+                'status': 'error',
+                'message': f"No leak records found for '{query}'."
             }), 200
     except Exception as e:
         return jsonify({'status': 'error', 'message': str(e)}), 500
