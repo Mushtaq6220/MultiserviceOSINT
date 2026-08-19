@@ -1,26 +1,16 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Insta Info - InfoCore OSINT</title>
-  <meta name="description" content="Instagram profile OSINT lookup, follower analytics, bio metadata, and public activity insights.">
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="/style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IMEI Info Lookup — InfoCore</title>
+  <meta name="description" content="IMEI device specification and TAC lookup utility on InfoCore." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=4.3" />
 </head>
-
 <body>
-  <div class="app-background">
-    <div class="glow-sphere sphere-1"></div>
-    <div class="glow-sphere sphere-2"></div>
-  </div>
 
   <!-- Floating Navigation Bar -->
   <header class="navbar-wrapper">
@@ -56,20 +46,24 @@
               <span>Truecaller Info</span>
             </a>
             <a href="/upi" class="dropdown-item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
               <span>UPI Info</span>
             </a>
             <a href="/email" class="dropdown-item">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               <span>Email Info</span>
             </a>
-            <a href="/insta" class="dropdown-item">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
-              <span>Insta Saver</span>
+            <a href="/website-source" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span>Website Source</span>
             </a>
-            <a href="/insta-info" class="dropdown-item active">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="17"/></svg>
-              <span>Insta Info</span>
+            <a href="/song" class="dropdown-item">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              <span>Song Downloader</span>
+            </a>
+            <a href="/imei" class="dropdown-item active">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              <span>IMEI Info</span>
             </a>
             <a href="/github" class="dropdown-item">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
@@ -129,7 +123,7 @@
             </div>
             <svg class="mobile-more-chevron" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"></polyline></svg>
           </button>
-          <div class="mobile-more-submenu" id="mobileMoreSubmenu">
+          <div class="mobile-more-submenu hidden" id="mobileMoreSubmenu">
             <a href="/truecaller" class="sheet-item sheet-subitem">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
               <span>Truecaller Info</span>
@@ -142,13 +136,17 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
               <span>Email Info</span>
             </a>
-            <a href="/insta" class="sheet-item sheet-subitem">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/></svg>
-              <span>Insta Saver</span>
+            <a href="/website-source" class="sheet-item sheet-subitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+              <span>Website Source</span>
             </a>
-            <a href="/insta-info" class="sheet-item sheet-subitem active">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="17"/></svg>
-              <span>Insta Info</span>
+            <a href="/song" class="sheet-item sheet-subitem">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+              <span>Song Downloader</span>
+            </a>
+            <a href="/imei" class="sheet-item sheet-subitem active">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              <span>IMEI Info</span>
             </a>
             <a href="/github" class="sheet-item sheet-subitem">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
@@ -168,7 +166,7 @@
   <main class="main-content">
     <div class="content-container">
 
-      <!-- INSTAGRAM PROFILE OSINT SECTION -->
+      <!-- IMEI INFO SECTION -->
       <section class="tool-panel">
         <a href="/" class="back-home-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -176,18 +174,60 @@
         </a>
 
         <div class="panel-header">
-          <h2>Instagram Profile Info (OSINT)</h2>
-          <p>Lookup Instagram profile metadata, bio links, follower metrics & account details.</p>
+          <h2>IMEI Device Info Lookup</h2>
+          <p>Retrieve mobile phone hardware specifications, brand, model & TAC intelligence.</p>
         </div>
 
-        <!-- Clean Work In Progress Card -->
-        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
-          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
-            Work In Progress
+        <div class="card search-box">
+          <div class="form-group">
+            <label for="imeiInput">Enter 15-Digit IMEI Number</label>
+            <div class="input-row">
+              <div class="input-field-wrapper">
+                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                <input type="text" id="imeiInput" placeholder="e.g. 353010111111110" autocomplete="off" maxlength="16" />
+                <button class="clear-btn" id="imeiClearBtn" title="Clear input">&times;</button>
+              </div>
+              <button class="btn btn-primary" id="imeiLookupBtn" onclick="doImeiLookup()">
+                <span>Fetch IMEI Info</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </div>
           </div>
-          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">Instagram profile OSINT lookup is currently under active development.</p>
+
+          <!-- Official reCAPTCHA v2 Widget -->
+          <div class="real-recaptcha-widget" id="imeiCaptchaWidget">
+            <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('imei')">
+              <div class="recaptcha-checkbox" id="imeiCaptchaBox">
+                <div class="recaptcha-spinner hidden" id="imeiCaptchaSpinner"></div>
+                <svg class="recaptcha-checkmark hidden" id="imeiCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="recaptcha-text">I'm not a robot</span>
+            </div>
+            <div class="recaptcha-branding">
+              <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
+                <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
+                <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
+                <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
+                <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
+              </svg>
+              <div class="recaptcha-brand-name">reCAPTCHA</div>
+              <div class="recaptcha-brand-links">
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> - 
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="imeiResultArea" class="hidden" style="margin-top: 16px;">
+          <div id="imeiErrorCard" class="alert alert-error hidden">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="imeiErrorDesc">No device information found for this IMEI.</span>
+          </div>
+          <div id="imeiSuccessCard"></div>
         </div>
       </section>
 
@@ -203,6 +243,6 @@
     </div>
   </footer>
 
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>

@@ -937,100 +937,531 @@ function showVehicleSuccess(data, rc) {
 }
 
 // ===== INSTAGRAM LOOKUP =====
-let selectedQuality = '720';
+// ===== VEHICLE OWNER MOBILE NUMBER LOOKUP (SECTION 2) =====
+(function setupVehicleNumListeners() {
+  const inputEl  = document.getElementById('vehicleNumInput');
+  const clearBtn = document.getElementById('vehicleNumClearBtn');
+  if (!inputEl) return;
 
-function setQuality(el) {
-  document.querySelectorAll('.q-btn').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  selectedQuality = el.dataset.quality;
-}
+  inputEl.addEventListener('input', () => {
+    if (clearBtn) clearBtn.style.display = inputEl.value.length > 0 ? 'inline-flex' : 'none';
+  });
 
-const instaInput     = document.getElementById('instaInput');
-const instaLookupBtn = document.getElementById('instaLookupBtn');
-const instaClearBtn  = document.getElementById('instaClearBtn');
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doVehicleNumLookup();
+  });
 
-instaInput.addEventListener('input', () => {
-  instaClearBtn.classList.toggle('visible', instaInput.value.length > 0);
-});
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+    clearBtn.addEventListener('click', () => {
+      inputEl.value = '';
+      clearBtn.style.display = 'none';
+      const ra = document.getElementById('vehicleNumResultArea');
+      if (ra) ra.classList.add('hidden');
+      inputEl.focus();
+    });
+  }
+})();
 
-instaClearBtn.addEventListener('click', () => {
-  instaInput.value = '';
-  instaClearBtn.classList.remove('visible');
-  document.getElementById('instaResultArea').classList.add('hidden');
-  instaInput.focus();
-});
+async function doVehicleNumLookup() {
+  const inputEl = document.getElementById('vehicleNumInput');
+  const btnEl   = document.getElementById('vehicleNumLookupBtn');
+  if (!inputEl) return;
 
-instaInput.addEventListener('keydown', e => { if (e.key === 'Enter') doInstaLookup(); });
+  const rc = inputEl.value.trim().toUpperCase().replace(/\s+/g, '');
+  if (!rc) { shakeInput(inputEl); return; }
+  if (!validateCaptcha('vehicleNum')) return;
 
-async function doInstaLookup() {
-  const urlVal = instaInput.value.trim();
-  if (!urlVal) { shakeInput(instaInput); return; }
-  if (!validateCaptcha('insta')) return;
-
-  setLoading(instaLookupBtn, true);
-  const resultArea = document.getElementById('instaResultArea');
-  resultArea.classList.add('hidden');
+  if (btnEl) setLoading(btnEl, true);
+  const ra = document.getElementById('vehicleNumResultArea');
+  if (ra) ra.classList.add('hidden');
 
   try {
-    const res = await safeFetch(`/instagram?quality=${selectedQuality}&url=${encodeURIComponent(urlVal)}`);
+    const res  = await safeFetch(`/vehicle_num/${encodeURIComponent(rc)}`);
     const data = await res.json();
 
-    if (!data.status || !data.result || !data.result.url || !data.result.url.length) {
-      showInstaError(data.message || 'Failed to extract video URL. Ensure link is public.');
+    if (data && (data.success || data.mobile_no || data.owner)) {
+      showVehicleNumSuccess(data, rc);
     } else {
-      showInstaSuccess(data);
+      showVehicleNumError((data && data.message) || `No linked mobile number found for vehicle '${rc}'.`);
     }
   } catch (err) {
-    showInstaError('Could not reach backend proxy. Make sure server.py is running on port 5000.');
+    showVehicleNumError('Could not fetch vehicle owner mobile details. Please try again.');
   } finally {
-    setLoading(instaLookupBtn, false);
-    resetCaptcha('insta');
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('vehicleNum');
   }
 }
 
-function showInstaError(msg) {
-  const ra = document.getElementById('instaResultArea');
+function showVehicleNumError(msg) {
+  const ra = document.getElementById('vehicleNumResultArea');
+  if (!ra) return;
   ra.classList.remove('hidden');
-  document.getElementById('instaErrorCard').classList.remove('hidden');
-  document.getElementById('instaSuccessCard').classList.add('hidden');
-  document.getElementById('instaErrorDesc').textContent = msg;
+  const errCard = document.getElementById('vehicleNumErrorCard');
+  if (errCard) errCard.classList.remove('hidden');
+  const succCard = document.getElementById('vehicleNumSuccessCard');
+  if (succCard) succCard.classList.add('hidden');
+  const errDesc = document.getElementById('vehicleNumErrorDesc');
+  if (errDesc) errDesc.textContent = msg;
 }
 
-function showInstaSuccess(data) {
-  const ra = document.getElementById('instaResultArea');
+function showVehicleNumSuccess(data, rc) {
+  const ra = document.getElementById('vehicleNumResultArea');
+  if (!ra) return;
   ra.classList.remove('hidden');
-  document.getElementById('instaErrorCard').classList.add('hidden');
-  document.getElementById('instaSuccessCard').classList.remove('hidden');
+  const errCard  = document.getElementById('vehicleNumErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const succCard = document.getElementById('vehicleNumSuccessCard');
+  if (!succCard) return;
+  succCard.classList.remove('hidden');
 
-  document.getElementById('instaQualityLabel').textContent = `${selectedQuality}p HD`;
+  const ownerName = escHtml(data.owner || 'Vehicle Owner');
+  const vehicleNo = escHtml(data.vnum || rc);
+  const mobileNo  = escHtml(data.mobile_no || 'N/A');
 
-  const container = document.getElementById('instaMediaContainer');
-  container.innerHTML = '';
+  succCard.innerHTML = `
+    <div class="profile-card-simple">
+      <div class="profile-head-row">
+        <div class="avatar-circle">🚗</div>
+        <div class="profile-main-info">
+          <div class="profile-name">${ownerName}</div>
+          <div class="profile-subtext">Vehicle: <strong>${vehicleNo}</strong></div>
+        </div>
+      </div>
+      <div class="info-grid">
+        <div class="info-item">
+          <div class="info-label">Vehicle Registration</div>
+          <div class="info-val">${vehicleNo}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Linked Mobile Number</div>
+          <div class="info-val" style="color:var(--accent-color);font-weight:700;font-size:1.05rem;">
+            📞 <a href="tel:${mobileNo}" style="color:inherit;text-decoration:none;">${mobileNo}</a>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Owner Name</div>
+          <div class="info-val">${ownerName}</div>
+        </div>
+      </div>
+      <div class="credits-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+        Mushtaq_OSINT
+      </div>
+    </div>
+  `;
+}
 
-  const urls = data.result.url || [];
-  urls.forEach((mediaUrl, idx) => {
-    const video = document.createElement('video');
-    video.className = 'video-element';
-    video.controls = true;
-    video.preload = 'metadata';
+// ===== WEBSITE SOURCE SCRAPER =====
+(function setupWebSourceListeners() {
+  const inputEl  = document.getElementById('webSourceInput');
+  const clearBtn = document.getElementById('webSourceClearBtn');
+  if (!inputEl) return;
 
-    const source = document.createElement('source');
-    source.src = mediaUrl;
-    source.type = 'video/mp4';
-    video.appendChild(source);
-
-    const downloadLink = document.createElement('a');
-    downloadLink.className = 'btn btn-primary';
-    downloadLink.style.marginTop = '10px';
-    downloadLink.href = mediaUrl;
-    downloadLink.target = '_blank';
-    downloadLink.rel = 'noopener noreferrer';
-    downloadLink.setAttribute('download', `instagram_video_${idx+1}.mp4`);
-    downloadLink.textContent = `Download Video ${urls.length > 1 ? `#${idx+1}` : ''}`;
-
-    container.appendChild(video);
-    container.appendChild(downloadLink);
+  inputEl.addEventListener('input', () => {
+    if (clearBtn) clearBtn.style.display = inputEl.value.length > 0 ? 'inline-flex' : 'none';
   });
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doWebsiteSourceLookup();
+  });
+
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+    clearBtn.addEventListener('click', () => {
+      inputEl.value = '';
+      clearBtn.style.display = 'none';
+      const ra = document.getElementById('webSourceResultArea');
+      if (ra) ra.classList.add('hidden');
+      inputEl.focus();
+    });
+  }
+})();
+
+async function doWebsiteSourceLookup() {
+  const inputEl = document.getElementById('webSourceInput');
+  const btnEl   = document.getElementById('webSourceLookupBtn');
+  if (!inputEl) return;
+
+  const urlVal = inputEl.value.trim();
+  if (!urlVal) { shakeInput(inputEl); return; }
+  if (!validateCaptcha('webSource')) return;
+
+  if (btnEl) setLoading(btnEl, true);
+  const ra = document.getElementById('webSourceResultArea');
+  if (ra) ra.classList.add('hidden');
+
+  try {
+    const res  = await safeFetch(`/website_source?url=${encodeURIComponent(urlVal)}`);
+    const data = await res.json();
+
+    if (data && data.success && data.data) {
+      showWebSourceSuccess(data.data);
+    } else {
+      showWebSourceError((data && data.message) || 'Failed to extract website source code.');
+    }
+  } catch (err) {
+    showWebSourceError('Could not connect to website scraper service.');
+  } finally {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('webSource');
+  }
+}
+
+function showWebSourceError(msg) {
+  const ra = document.getElementById('webSourceResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('webSourceErrorCard');
+  if (errCard) errCard.classList.remove('hidden');
+  const succCard = document.getElementById('webSourceSuccessCard');
+  if (succCard) succCard.classList.add('hidden');
+  const errDesc = document.getElementById('webSourceErrorDesc');
+  if (errDesc) errDesc.textContent = msg;
+}
+
+function showWebSourceSuccess(d) {
+  const ra = document.getElementById('webSourceResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard  = document.getElementById('webSourceErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const succCard = document.getElementById('webSourceSuccessCard');
+  if (!succCard) return;
+  succCard.classList.remove('hidden');
+
+  const domain = escHtml(d.domain || 'Target Site');
+  const downloadUrl = d.download_url || d.tmpfiles_url || d.local_download_url || '#';
+  const fileCount = d.file_count || 1;
+  const fileSizeMb = d.file_size_mb !== undefined ? d.file_size_mb : 0;
+  const timeTaken = d.time_taken_seconds || 0;
+  const fileId = escHtml(d.file_id || 'N/A');
+  const snippet = d.html_snippet ? escHtml(d.html_snippet) : null;
+
+  succCard.innerHTML = `
+    <div class="profile-card-simple">
+      <div class="profile-head-row">
+        <div class="avatar-circle">🌐</div>
+        <div class="profile-main-info">
+          <div class="profile-name">${domain}</div>
+          <div class="profile-subtext">Source Code Package Extracted • ${fileCount} File(s)</div>
+        </div>
+      </div>
+
+      <div class="info-grid" style="margin-bottom:16px;">
+        <div class="info-item">
+          <div class="info-label">Target Domain</div>
+          <div class="info-val">${domain}</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Extraction Time</div>
+          <div class="info-val">${timeTaken} seconds</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Total Files Extracted</div>
+          <div class="info-val">${fileCount} File(s) (${fileSizeMb} MB)</div>
+        </div>
+        <div class="info-item">
+          <div class="info-label">Package Identifier</div>
+          <div class="info-val" style="font-family:monospace;font-size:0.8rem;">${fileId}</div>
+        </div>
+      </div>
+
+      ${snippet ? `
+      <!-- Code Box Preview -->
+      <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:10px;padding:12px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
+          <span style="font-family:monospace;font-size:0.8rem;color:var(--text-secondary);">📄 index.html (Source Preview)</span>
+          <button onclick="navigator.clipboard.writeText(document.getElementById('srcCodeBox').textContent);alert('Source code copied!');" class="btn" style="padding:4px 10px;font-size:0.75rem;background:rgba(0,128,255,0.15);color:var(--accent-color);">Copy Source</button>
+        </div>
+        <pre id="srcCodeBox" style="font-family:monospace;font-size:0.78rem;color:#10b981;background:#0d1117;padding:12px;border-radius:6px;max-height:220px;overflow:auto;margin:0;white-space:pre-wrap;word-break:break-all;">${snippet}</pre>
+      </div>` : ''}
+
+      <!-- Code Box Style Download Card -->
+      <div style="background:rgba(0,0,0,0.3);border:1px solid var(--border-color);border-radius:10px;padding:16px;margin-bottom:14px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+          <span style="font-family:monospace;font-size:0.82rem;color:var(--text-secondary);">📦 source_code_${domain}.zip</span>
+          <span style="font-size:0.75rem;padding:2px 8px;background:rgba(34,197,94,0.15);color:#22c55e;border-radius:12px;font-weight:600;">READY</span>
+        </div>
+        <a href="${downloadUrl}" target="_blank" rel="noopener noreferrer" download="source_${domain}.zip" class="btn btn-primary" style="width:100%;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          <span>Download Source Code (.ZIP)</span>
+        </a>
+      </div>
+
+      <div class="credits-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+        Mushtaq_OSINT
+      </div>
+    </div>
+  `;
+}
+
+// ===== SONG DOWNLOADER =====
+(function setupSongListeners() {
+  const inputEl  = document.getElementById('songInput');
+  const clearBtn = document.getElementById('songClearBtn');
+  if (!inputEl) return;
+
+  inputEl.addEventListener('input', () => {
+    if (clearBtn) clearBtn.style.display = inputEl.value.length > 0 ? 'inline-flex' : 'none';
+  });
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doSongLookup();
+  });
+
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+    clearBtn.addEventListener('click', () => {
+      inputEl.value = '';
+      clearBtn.style.display = 'none';
+      const ra = document.getElementById('songResultArea');
+      if (ra) ra.classList.add('hidden');
+      inputEl.focus();
+    });
+  }
+})();
+
+async function doSongLookup() {
+  const inputEl = document.getElementById('songInput');
+  const btnEl   = document.getElementById('songLookupBtn');
+  if (!inputEl) return;
+
+  const songName = inputEl.value.trim();
+  if (!songName) { shakeInput(inputEl); return; }
+  if (!validateCaptcha('song')) return;
+
+  if (btnEl) setLoading(btnEl, true);
+  const ra = document.getElementById('songResultArea');
+  if (ra) ra.classList.add('hidden');
+
+  try {
+    const res  = await safeFetch(`/song_download?song=${encodeURIComponent(songName)}`);
+    const data = await res.json();
+
+    const results = (data && data.data && data.data.results) || (data && data.results);
+
+    if (results && results.length > 0) {
+      showSongSuccess(results, songName);
+    } else {
+      showSongError(`No songs found matching '${songName}'.`);
+    }
+  } catch (err) {
+    showSongError('Could not fetch song results. Please try again.');
+  } finally {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('song');
+  }
+}
+
+function showSongError(msg) {
+  const ra = document.getElementById('songResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('songErrorCard');
+  if (errCard) errCard.classList.remove('hidden');
+  const succCard = document.getElementById('songSuccessCard');
+  if (succCard) succCard.classList.add('hidden');
+  const errDesc = document.getElementById('songErrorDesc');
+  if (errDesc) errDesc.textContent = msg;
+}
+
+function showSongSuccess(results, songName) {
+  const ra = document.getElementById('songResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard  = document.getElementById('songErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const succCard = document.getElementById('songSuccessCard');
+  if (!succCard) return;
+  succCard.classList.remove('hidden');
+
+  const songCardsHtml = results.map((s, idx) => {
+    const title       = escHtml(s.title || 'Unknown Song');
+    const artists     = escHtml(s.artists || 'Unknown Artist');
+    const album       = escHtml(s.album || '');
+    const duration    = escHtml(s.duration || '');
+    const downloadUrl = s.download_url || '#';
+
+    return `
+      <div class="card song-card-structured" style="margin-bottom:14px;padding:18px;border:1px solid var(--border-color);border-radius:12px;background:rgba(255,255,255,0.02);">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;flex:1;min-width:220px;">
+            <div style="width:40px;height:40px;border-radius:10px;background:rgba(0,128,255,0.12);border:1px solid rgba(0,128,255,0.25);display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;color:var(--accent-color, #0080FF);">🎵</div>
+            <div style="flex:1;min-width:0;">
+              <div style="font-weight:700;font-size:1.02rem;color:var(--text-primary);line-height:1.3;">#${idx+1}. ${title}</div>
+              <div style="font-size:0.82rem;color:var(--text-secondary);margin-top:3px;">🎤 ${artists} ${album ? '• 💿 ' + album : ''}</div>
+            </div>
+          </div>
+          ${duration ? `<span style="font-size:0.75rem;padding:4px 10px;background:rgba(0,128,255,0.1);border:1px solid rgba(0,128,255,0.2);border-radius:12px;color:var(--accent-color,#0080FF);font-weight:600;">⏱️ ${duration}</span>` : ''}
+        </div>
+
+        <!-- Clean Audio Player without 3-dots overflow download menu -->
+        <div style="margin:12px 0;">
+          <audio controls controlsList="nodownload noplaybackrate noremoteplayback" style="width:100%;height:40px;border-radius:8px;" preload="none" class="song-audio-player">
+            <source src="${downloadUrl}" type="audio/mp4">
+            <source src="${downloadUrl}" type="audio/mpeg">
+            Your browser does not support audio playback.
+          </audio>
+        </div>
+
+        <div style="margin-top:10px;">
+          <a href="/stream_audio?url=${encodeURIComponent(downloadUrl)}&title=${encodeURIComponent(s.title || 'song')}" download="${title}.mp3" class="btn btn-primary" style="width:100%;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 16px;font-weight:600;border-radius:8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Download 320kbps MP3</span>
+          </a>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  succCard.innerHTML = `
+    <div style="margin-bottom:14px;font-size:0.9rem;color:var(--text-secondary);display:flex;align-items:center;justify-content:space-between;">
+      <span>Found <strong style="color:var(--text-primary);">${results.length}</strong> song track(s) for "<em>${escHtml(songName)}</em>"</span>
+      <span style="font-size:0.75rem;color:var(--text-muted);">Auto-pause enabled</span>
+    </div>
+    ${songCardsHtml}
+    <div class="credits-row" style="margin-top:16px;">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+      Mushtaq_OSINT
+    </div>
+  `;
+}
+
+// Global Single Audio Active Instance Listener
+if (typeof document !== 'undefined') {
+  document.addEventListener('play', function(e) {
+    if (e.target && e.target.tagName === 'AUDIO') {
+      const allAudios = document.querySelectorAll('audio');
+      allAudios.forEach(audio => {
+        if (audio !== e.target) {
+          audio.pause();
+        }
+      });
+    }
+  }, true);
+}
+
+// ===== IMEI INFO LOOKUP =====
+(function setupImeiListeners() {
+  const inputEl  = document.getElementById('imeiInput');
+  const clearBtn = document.getElementById('imeiClearBtn');
+  if (!inputEl) return;
+
+  inputEl.addEventListener('input', () => {
+    if (clearBtn) clearBtn.style.display = inputEl.value.length > 0 ? 'inline-flex' : 'none';
+  });
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') doImeiLookup();
+  });
+
+  if (clearBtn) {
+    clearBtn.style.display = 'none';
+    clearBtn.addEventListener('click', () => {
+      inputEl.value = '';
+      clearBtn.style.display = 'none';
+      const ra = document.getElementById('imeiResultArea');
+      if (ra) ra.classList.add('hidden');
+      inputEl.focus();
+    });
+  }
+})();
+
+async function doImeiLookup() {
+  const inputEl = document.getElementById('imeiInput');
+  const btnEl   = document.getElementById('imeiLookupBtn');
+  if (!inputEl) return;
+
+  const imei = inputEl.value.trim();
+  if (!imei) { shakeInput(inputEl); return; }
+  if (!validateCaptcha('imei')) return;
+
+  if (btnEl) setLoading(btnEl, true);
+  const ra = document.getElementById('imeiResultArea');
+  if (ra) ra.classList.add('hidden');
+
+  try {
+    const res  = await safeFetch(`/imei_lookup/${encodeURIComponent(imei)}`);
+    const data = await res.json();
+
+    const detail = data && data.data;
+    if (detail) {
+      showImeiSuccess(detail, imei);
+    } else {
+      showImeiError((data && data.message) || `No information found for IMEI '${imei}'.`);
+    }
+  } catch (err) {
+    showImeiError('Could not fetch IMEI device details. Please try again.');
+  } finally {
+    if (btnEl) setLoading(btnEl, false);
+    resetCaptcha('imei');
+  }
+}
+
+function showImeiError(msg) {
+  const ra = document.getElementById('imeiResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard = document.getElementById('imeiErrorCard');
+  if (errCard) errCard.classList.remove('hidden');
+  const succCard = document.getElementById('imeiSuccessCard');
+  if (succCard) succCard.classList.add('hidden');
+  const errDesc = document.getElementById('imeiErrorDesc');
+  if (errDesc) errDesc.textContent = msg;
+}
+
+function showImeiSuccess(detail, imei) {
+  const ra = document.getElementById('imeiResultArea');
+  if (!ra) return;
+  ra.classList.remove('hidden');
+  const errCard  = document.getElementById('imeiErrorCard');
+  if (errCard) errCard.classList.add('hidden');
+  const succCard = document.getElementById('imeiSuccessCard');
+  if (!succCard) return;
+  succCard.classList.remove('hidden');
+
+  let rowsHtml = '';
+  if (typeof detail === 'object' && detail !== null) {
+    rowsHtml = Object.entries(detail).map(([k, v]) => {
+      if (!v || k === 'channel' || k === 'developer') return '';
+      if (k === 'detail' && (String(v).includes('expensive') || String(v).includes('error'))) return '';
+      const label = escHtml(k.replace(/_/g, ' ').toUpperCase());
+      const valStr = String(v);
+      const isHighlight = k === 'luhn_validity' || k === 'imei_number';
+      return `
+        <div class="info-item">
+          <div class="info-label">${label}</div>
+          <div class="info-val" style="${isHighlight ? 'color:var(--accent-color);font-weight:700;' : ''}">${escHtml(valStr)}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  if (!rowsHtml) {
+    showImeiError(`No device specs returned for IMEI '${imei}'.`);
+    return;
+  }
+
+  succCard.innerHTML = `
+    <div class="profile-card-simple">
+      <div class="profile-head-row">
+        <div class="avatar-circle">📱</div>
+        <div class="profile-main-info">
+          <div class="profile-name">IMEI: ${escHtml(imei)}</div>
+          <div class="profile-subtext">Device TAC Hardware Specification</div>
+        </div>
+      </div>
+      <div class="info-grid">
+        ${rowsHtml}
+      </div>
+      <div class="credits-row">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
+        Mushtaq_OSINT
+      </div>
+    </div>
+  `;
 }
 
 // ===== BACKEND HEALTH CHECK =====

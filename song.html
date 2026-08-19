@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>UPI Info — InfoCore</title>
-  <meta name="description" content="UPI VPA address lookup and account verification utility on InfoCore." />
+  <title>Song Downloader — InfoCore</title>
+  <meta name="description" content="Search, stream and download high quality music songs on InfoCore." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -45,7 +45,7 @@
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
               <span>Truecaller Info</span>
             </a>
-            <a href="/upi" class="dropdown-item active">
+            <a href="/upi" class="dropdown-item">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
               <span>UPI Info</span>
             </a>
@@ -57,7 +57,7 @@
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
               <span>Website Source</span>
             </a>
-            <a href="/song" class="dropdown-item">
+            <a href="/song" class="dropdown-item active">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
               <span>Song Downloader</span>
             </a>
@@ -128,7 +128,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13A19.79 19.79 0 0 1 3 2h3a2 2 0 0 1 2 1.72z"/></svg>
               <span>Truecaller Info</span>
             </a>
-            <a href="/upi" class="sheet-item sheet-subitem active">
+            <a href="/upi" class="sheet-item sheet-subitem">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
               <span>UPI Info</span>
             </a>
@@ -140,7 +140,7 @@
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
               <span>Website Source</span>
             </a>
-            <a href="/song" class="sheet-item sheet-subitem">
+            <a href="/song" class="sheet-item sheet-subitem active">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
               <span>Song Downloader</span>
             </a>
@@ -166,7 +166,7 @@
   <main class="main-content">
     <div class="content-container">
 
-      <!-- ===== UPI INFO SECTION ===== -->
+      <!-- SONG DOWNLOADER SECTION -->
       <section class="tool-panel">
         <a href="/" class="back-home-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
@@ -174,17 +174,60 @@
         </a>
 
         <div class="panel-header">
-          <h2>UPI Info Lookup</h2>
-          <p>Verify UPI VPA address, account holder name, and banking handle info.</p>
+          <h2>Music Song Search & Downloader</h2>
+          <p>Search any song, listen live preview, and download 320kbps MP3 audio files.</p>
         </div>
 
-        <div class="card search-box" style="text-align: center; padding: 48px 24px;">
-          <div class="status-badge-pulse" style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(0, 128, 255, 0.1); border: 1px solid rgba(0, 128, 255, 0.25); border-radius: 20px; color: var(--accent-color, #0080FF); font-weight: 600; font-size: 0.85rem; margin-bottom: 12px;">
-            <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--accent-color, #0080FF); display: inline-block;"></span>
-            Work In Progress
+        <div class="card search-box">
+          <div class="form-group">
+            <label for="songInput">Enter Song Name or Artist</label>
+            <div class="input-row">
+              <div class="input-field-wrapper">
+                <svg class="field-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+                <input type="text" id="songInput" placeholder="e.g. Chandni, Kesariya, etc." autocomplete="off" maxlength="150" />
+                <button class="clear-btn" id="songClearBtn" title="Clear input">&times;</button>
+              </div>
+              <button class="btn btn-primary" id="songLookupBtn" onclick="doSongLookup()">
+                <span>Search Song</span>
+                <span class="btn-spinner"></span>
+              </button>
+            </div>
           </div>
-          <h3 style="font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin: 0 0 6px 0;">Soon it will be available</h3>
-          <p style="font-size: 0.88rem; color: var(--text-secondary); margin: 0;">UPI Info verification service is currently under active development.</p>
+
+          <!-- Official reCAPTCHA v2 Widget -->
+          <div class="real-recaptcha-widget" id="songCaptchaWidget">
+            <div class="recaptcha-checkbox-box" onclick="triggerRecaptcha('song')">
+              <div class="recaptcha-checkbox" id="songCaptchaBox">
+                <div class="recaptcha-spinner hidden" id="songCaptchaSpinner"></div>
+                <svg class="recaptcha-checkmark hidden" id="songCaptchaCheck" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#09b83e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+              </div>
+              <span class="recaptcha-text">I'm not a robot</span>
+            </div>
+            <div class="recaptcha-branding">
+              <svg class="recaptcha-logo" width="28" height="28" viewBox="0 0 48 48">
+                <path fill="#4285F4" d="M24 8a16 16 0 0 1 11.3 4.7l-4 4A10.3 10.3 0 0 0 24 13.7a10.3 10.3 0 0 0-10.3 10.3h-5.7A16 16 0 0 1 24 8z"/>
+                <path fill="#34A853" d="M35.3 12.7A16 16 0 0 1 40 24a16 16 0 0 1-16 16v-5.7A10.3 10.3 0 0 0 34.3 24a10.3 10.3 0 0 0-3-7.3l4-4z"/>
+                <path fill="#EA4335" d="M24 40a16 16 0 0 1-11.3-4.7l4-4a10.3 10.3 0 0 0 7.3 3V40z"/>
+                <path fill="#FBBC05" d="M8 24a16 16 0 0 1 4.7-11.3l4 4a10.3 10.3 0 0 0-3 7.3H8z"/>
+              </svg>
+              <div class="recaptcha-brand-name">reCAPTCHA</div>
+              <div class="recaptcha-brand-links">
+                <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy</a> - 
+                <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Result Area -->
+        <div id="songResultArea" class="hidden" style="margin-top: 16px;">
+          <div id="songErrorCard" class="alert alert-error hidden">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span id="songErrorDesc">No songs found matching query.</span>
+          </div>
+          <div id="songSuccessCard"></div>
         </div>
       </section>
 
