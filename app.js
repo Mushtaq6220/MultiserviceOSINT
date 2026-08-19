@@ -428,13 +428,18 @@ async function doPhoneLookup() {
     const res = await safeFetch(`/phone/${encodeURIComponent(num)}?key=@AwesomFF`);
     const data = await res.json();
 
-    if (data.status === 'error' || data.message === 'Access Denied' || data.total_results === 0 || !data.result) {
+    // API returns { success, results, total } — NOT { status, result }
+    const hasData = data.success === true || data.success === 'true';
+    const resultPayload = data.results || data.result || null;
+    const isEmpty = !resultPayload || (typeof resultPayload === 'object' && Object.keys(resultPayload).length === 0);
+
+    if (!hasData || isEmpty || data.message === 'Access Denied') {
       showPhoneError(data.message || `No information found for "${num}".`);
     } else {
-      showPhoneSuccess(data, num);
+      showPhoneSuccess({ ...data, result: resultPayload }, num);
     }
   } catch (err) {
-    showPhoneError('Cannot reach backend proxy. Make sure server.py is running on port 5000.');
+    showPhoneError('Cannot reach backend proxy. Make sure the server is running.');
   } finally {
     setLoading(phoneLookupBtn, false);
     resetCaptcha('phone');
@@ -804,8 +809,9 @@ async function doVehicleLookup() {
       data = await res.json();
     }
 
-    if (!data || data.error || (data.status && data.status !== '100' && data.status !== '1')) {
-      showVehicleError((data && (data.message || data.error)) || 'Invalid RC number or no details found.');
+    // API returns { response: {...}, regNo, ... } — check for response object presence
+    if (!data || data.error || (!data.response && !data['Owner Details'])) {
+      showVehicleError((data && (data.message || data.error)) || 'Invalid RC number or no vehicle details found.');
     } else {
       showVehicleSuccess(data, rc);
     }
