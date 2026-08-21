@@ -428,15 +428,29 @@ async function doPhoneLookup() {
     const res = await safeFetch(`/phone/${encodeURIComponent(num)}?key=@AwesomFF`);
     const data = await res.json();
 
-    // API returns { success, results, total } — NOT { status, result }
-    const hasData = data.success === true || data.success === 'true';
-    const resultPayload = data.results || data.result || null;
-    const isEmpty = !resultPayload || (typeof resultPayload === 'object' && Object.keys(resultPayload).length === 0);
+    // Support both { status: true, result: [...] } and { success: true, results: [...] }
+    const resultPayload = data.result || data.results || data.data || null;
+    const hasData = (data.status === true || data.status === 'true' || data.success === true || data.success === 'true') && resultPayload;
+    
+    let records = extractRecords(resultPayload);
+    
+    // Fallback: If no records found from main API and num is 12 digits (Aadhaar), try Aadhaar API
+    if ((!hasData || records.length === 0) && num.length === 12 && /^\d+$/.test(num)) {
+      try {
+        const aadharRes = await safeFetch(`/aadhar/${encodeURIComponent(num)}?key=@AwesomFF`);
+        if (aadharRes.ok) {
+          const aadharData = await aadharRes.json();
+          if (aadharData && aadharData.result) {
+            records = extractRecords(aadharData.result);
+          }
+        }
+      } catch (e) {}
+    }
 
-    if (!hasData || isEmpty || data.message === 'Access Denied') {
+    if (records.length === 0 || data.message === 'Access Denied') {
       showPhoneError(data.message || `No information found for "${num}".`);
     } else {
-      showPhoneSuccess({ ...data, result: resultPayload }, num);
+      showPhoneSuccess({ ...data, result: records }, num);
     }
   } catch (err) {
     showPhoneError('Cannot reach backend proxy. Make sure the server is running.');
@@ -677,14 +691,28 @@ function renderProfileCard(type, records, activeIndex, queryVal, fullData) {
     cleanRec[cleanKey] = (v !== null && v !== undefined) ? String(v).trim() : '';
   }
 
-  const name      = cleanRec['NAME'] || cleanRec['OWNER_NAME'] || cleanRec['FULL_NAME'] || 'Unknown Person';
-  const fname     = cleanRec['FNAME'] || cleanRec['FATHER_NAME'] || cleanRec['SPOUSE'] || 'N/A';
-  const aadhar    = cleanRec['AADHAR'] || cleanRec['UID'] || (type === 'aadhar' ? queryVal : 'N/A');
-  const altNum    = cleanRec['ALT'] || cleanRec['ALT_NUM'] || cleanRec['ALTERNATE'] || 'N/A';
-  const circle    = cleanRec['CIRCLE'] || cleanRec['TELECOM'] || cleanRec['OPERATOR'] || 'India';
-  const rawAddr   = cleanRec['ADDRESS'] || cleanRec['LOCATION'] || cleanRec['ADDR'] || '';
-  const email     = cleanRec['EMAIL'] || 'N/A';
-  const phone     = cleanRec['NUM'] || (type === 'phone' ? queryVal : 'N/A');
+  const name      = cleanRec['NAME'] || cleanRec['OWNER_NAME'] || cleanRec['FULL_NAME'] || cleanRec['CUSTOMER_NAME'] || 'Unknown Person';
+  const fname     = cleanRec['FNAME'] || cleanRec['FATHER_NAME'] || cleanRec['FATHER_HUSBAND_NAME'] || cleanRec['SPOUSE'] || 'N/A';
+  
+  // Extract Aadhaar UID from all possible API response keys: AADHAR, AADHAAR, UID, ID, AADHAAR_NO, AADHAR_NO
+  let aadharRaw   = cleanRec['AADHAR'] || cleanRec['AADHAAR'] || cleanRec['UID'] || cleanRec['ID'] || cleanRec['AADHAAR_NO'] || cleanRec['AADHAR_NO'] || cleanRec['ID_NUM'] || (type === 'aadhar' ? queryVal : 'N/A');
+  
+  // Validate/format Aadhaar UID if present
+  let aadhar = 'N/A';
+  if (aadharRaw && aadharRaw !== 'N/A' && aadharRaw !== 'null') {
+    const digitsOnly = aadharRaw.replace(/\D/g, '');
+    if (digitsOnly.length === 12) {
+      aadhar = `${digitsOnly.slice(0,4)} ${digitsOnly.slice(4,8)} ${digitsOnly.slice(8,12)}`;
+    } else {
+      aadhar = aadharRaw;
+    }
+  }
+
+  const altNum    = cleanRec['ALT'] || cleanRec['ALT_NUM'] || cleanRec['ALTERNATE'] || cleanRec['ALT_MOBILE'] || 'N/A';
+  const circle    = cleanRec['CIRCLE'] || cleanRec['TELECOM'] || cleanRec['OPERATOR'] || cleanRec['CIRCLE_OPERATOR'] || 'India';
+  const rawAddr   = cleanRec['ADDRESS'] || cleanRec['LOCATION'] || cleanRec['ADDR'] || cleanRec['OWNER_ADDRESS'] || '';
+  const email     = cleanRec['EMAIL'] || cleanRec['EMAIL_ID'] || 'N/A';
+  const phone     = cleanRec['NUM'] || cleanRec['MOBILE'] || cleanRec['PHONE'] || cleanRec['NUMBER'] || (type === 'phone' ? queryVal : 'N/A');
 
   const formattedAddress = rawAddr ? rawAddr.replace(/!+/g, ', ').replace(/\s+,/g, ',').replace(/, ,/g, ',').trim() : 'No address record available';
   const avatarInitial = name !== 'Unknown Person' ? name.charAt(0).toUpperCase() : '👤';
@@ -713,6 +741,8 @@ function renderProfileCard(type, records, activeIndex, queryVal, fullData) {
   const cardEl = document.getElementById(cardId);
   if (!cardEl) return;
 
+  const isAadharValid = aadhar !== 'N/A';
+
   cardEl.innerHTML = `
     <div class="profile-card-simple">
       <div class="profile-head-row">
@@ -728,7 +758,9 @@ function renderProfileCard(type, records, activeIndex, queryVal, fullData) {
       <div class="info-grid">
         <div class="info-item">
           <div class="info-label">Aadhaar Number</div>
-          <div class="info-val">${escHtml(aadhar)}</div>
+          <div class="info-val" style="${isAadharValid ? 'font-family:monospace;letter-spacing:1px;font-weight:700;color:var(--accent-color);' : ''}">
+            ${isAadharValid ? '🪪 ' + escHtml(aadhar) : 'N/A'}
+          </div>
         </div>
 
         <div class="info-item">
