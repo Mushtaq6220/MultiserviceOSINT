@@ -212,6 +212,15 @@ AADHAAR_DB = {
         "alt": "N/A",
         "circle": "JIO AP",
         "address": "S/O Gajula Jafar, H Nm 7-55 shanthi nagar, pitlam mandal, PITLAM NIZAMABAD, Telangana, 503310"
+    },
+    "498985516545": {
+        "aadhar": "498985516545",
+        "name": "Deepak Singh",
+        "fname": "Kameshwar Shukla",
+        "num": "9929021092",
+        "alt": "9733063818",
+        "circle": "AIRTEL RAJASTHAN",
+        "address": "43, Ward 13, Near Main Chowk, Jaipur, Rajasthan - 302001"
     }
 }
 
