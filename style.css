@@ -2044,3 +2044,300 @@ audio::-webkit-media-controls-overflow-button {
   50% { transform: translateY(-3px) scale(1.1); }
 }
 
+/* ===== CLEAN, HIGH-CONTRAST & FIRE-ANIMATED SERVER MODAL ===== */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(10, 15, 30, 0.75);
+  backdrop-filter: blur(14px) saturate(160%);
+  -webkit-backdrop-filter: blur(14px) saturate(160%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  opacity: 1;
+  transition: opacity 0.25s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cool-modal-card {
+  position: relative;
+  width: 90%;
+  max-width: 480px;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, #e2e8f0);
+  border-radius: 20px;
+  padding: 26px 24px;
+  box-shadow: 
+    0 20px 50px -10px rgba(0, 0, 0, 0.4),
+    0 0 30px rgba(255, 102, 0, 0.15);
+  overflow: hidden;
+  transform: scale(1) translateY(0);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  animation: coolPopIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.hidden .cool-modal-card {
+  transform: scale(0.92) translateY(15px);
+}
+
+.cool-modal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.cool-title-box {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cool-header-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 102, 0, 0.15), rgba(255, 0, 85, 0.1));
+  color: #ff5500;
+  border: 1px solid rgba(255, 102, 0, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cool-modal-title {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-main, #0f172a);
+  margin: 0 0 4px 0;
+}
+
+.cool-modal-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted, #64748b);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.cool-close-btn {
+  background: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: var(--text-muted, #64748b);
+  font-size: 1.3rem;
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+[data-theme="dark"] .cool-close-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--text-muted, #94a3b8);
+}
+
+.cool-close-btn:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #ef4444;
+  transform: rotate(90deg);
+}
+
+.cool-server-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Colorful Animated Server Boxes */
+.cool-server-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 14px;
+  text-decoration: none !important;
+  color: var(--text-main, #0f172a) !important;
+  background: var(--bg-surface, #ffffff);
+  border: 1.8px solid var(--border-color, #e2e8f0);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+/* 🔥 SERVER 1 - FIRE / FLAME BLAST EFFECT */
+.server-fire {
+  background: linear-gradient(135deg, rgba(255, 85, 0, 0.05) 0%, rgba(255, 170, 0, 0.03) 100%);
+  border-color: rgba(255, 85, 0, 0.3);
+}
+
+.server-fire::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 120, 0, 0.25), transparent);
+  transform: skewX(-20deg);
+  transition: none;
+}
+
+.server-fire:hover::before {
+  animation: fireSparkSweep 1.2s infinite linear;
+}
+
+.server-fire:hover {
+  transform: translateY(-4px) scale(1.015);
+  background: linear-gradient(135deg, rgba(255, 85, 0, 0.12) 0%, rgba(255, 150, 0, 0.08) 100%);
+  border-color: #ff4500;
+  box-shadow: 
+    0 10px 25px -4px rgba(255, 69, 0, 0.45),
+    0 0 15px rgba(255, 140, 0, 0.3);
+  animation: fireFlamePulse 1.8s infinite ease-in-out;
+}
+
+/* ⚡ SERVER 2 - ELECTRIC NEON CYBER EFFECT */
+.server-cyber {
+  background: linear-gradient(135deg, rgba(0, 150, 255, 0.05) 0%, rgba(6, 182, 212, 0.03) 100%);
+  border-color: rgba(0, 150, 255, 0.3);
+}
+
+.server-cyber:hover {
+  transform: translateY(-4px) scale(1.015);
+  background: linear-gradient(135deg, rgba(0, 150, 255, 0.12) 0%, rgba(6, 182, 212, 0.08) 100%);
+  border-color: #0080ff;
+  box-shadow: 
+    0 10px 25px -4px rgba(0, 128, 255, 0.45),
+    0 0 15px rgba(6, 182, 212, 0.3);
+  animation: cyberAuraPulse 1.8s infinite ease-in-out;
+}
+
+.cool-server-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+.icon-fire {
+  background: linear-gradient(135deg, rgba(255, 69, 0, 0.2), rgba(255, 165, 0, 0.2));
+  color: #ff3300;
+  border: 1px solid rgba(255, 69, 0, 0.4);
+}
+
+.server-fire:hover .icon-fire {
+  transform: scale(1.15) rotate(-8deg);
+  animation: fireIconBounce 0.8s infinite alternate ease-in-out;
+}
+
+.icon-cyber {
+  background: linear-gradient(135deg, rgba(0, 128, 255, 0.2), rgba(6, 182, 212, 0.2));
+  color: #0080ff;
+  border: 1px solid rgba(0, 128, 255, 0.4);
+}
+
+.server-cyber:hover .icon-cyber {
+  transform: scale(1.15) rotate(8deg);
+}
+
+.cool-server-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.cool-server-title {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--text-main, #0f172a) !important;
+}
+
+.cool-server-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted, #475569) !important;
+}
+
+.cool-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+  display: inline-block;
+}
+
+.cool-arrow {
+  color: var(--text-muted, #64748b);
+  transition: all 0.2s ease;
+}
+
+.cool-server-box:hover .cool-arrow {
+  color: var(--text-main, #0f172a);
+  transform: translateX(5px);
+}
+
+/* Animations */
+@keyframes fireSparkSweep {
+  0% { left: -100%; }
+  100% { left: 200%; }
+}
+
+@keyframes fireFlamePulse {
+  0%, 100% {
+    box-shadow: 
+      0 8px 20px -4px rgba(255, 69, 0, 0.4),
+      0 0 12px rgba(255, 140, 0, 0.25);
+  }
+  50% {
+    box-shadow: 
+      0 12px 30px -2px rgba(255, 69, 0, 0.7),
+      0 0 22px rgba(255, 165, 0, 0.5);
+  }
+}
+
+@keyframes cyberAuraPulse {
+  0%, 100% {
+    box-shadow: 
+      0 8px 20px -4px rgba(0, 128, 255, 0.4),
+      0 0 12px rgba(6, 182, 212, 0.25);
+  }
+  50% {
+    box-shadow: 
+      0 12px 30px -2px rgba(0, 128, 255, 0.7),
+      0 0 22px rgba(6, 182, 212, 0.5);
+  }
+}
+
+@keyframes fireIconBounce {
+  0% { transform: scale(1.15) rotate(-8deg) translateY(0); }
+  100% { transform: scale(1.22) rotate(-2deg) translateY(-2px); }
+}
+
+@keyframes coolPopIn {
+  0% { transform: scale(0.9) translateY(20px); opacity: 0; }
+  100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
