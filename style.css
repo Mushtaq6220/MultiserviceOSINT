@@ -2341,3 +2341,242 @@ audio::-webkit-media-controls-overflow-button {
   100% { transform: scale(1) translateY(0); opacity: 1; }
 }
 
+/* ===== 3D ANIMATED LOGO & HACKER THEME BACKGROUND ===== */
+.bomber-3d-logo-wrapper {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 90px;
+  height: 90px;
+  margin-bottom: 24px;
+  perspective: 600px;
+}
+
+.bomber-3d-logo-badge {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0080ff 0%, #00d2ff 50%, #0055ff 100%);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 12px 28px -4px rgba(0, 128, 255, 0.6),
+    0 0 20px rgba(0, 210, 255, 0.4),
+    inset 0 2px 4px rgba(255, 255, 255, 0.6),
+    inset 0 -3px 6px rgba(0, 0, 0, 0.3);
+  transform-style: preserve-3d;
+  animation: logo3DRotateFloat 4s infinite ease-in-out;
+}
+
+.logo-pulse-ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 76px;
+  height: 76px;
+  margin-top: -38px;
+  margin-left: -38px;
+  border-radius: 50%;
+  border: 2px solid rgba(0, 128, 255, 0.6);
+  animation: electricPulseRing 2.4s infinite cubic-bezier(0.215, 0.61, 0.355, 1);
+  pointer-events: none;
+}
+
+.logo-pulse-ring.delay {
+  animation-delay: 1.2s;
+}
+
+/* Animations for 3D Logo */
+@keyframes logo3DRotateFloat {
+  0%, 100% {
+    transform: rotateY(0deg) rotateX(0deg) translateY(0) scale(1);
+    box-shadow: 
+      0 12px 28px -4px rgba(0, 128, 255, 0.6),
+      0 0 20px rgba(0, 210, 255, 0.4),
+      inset 0 2px 4px rgba(255, 255, 255, 0.6);
+  }
+  25% {
+    transform: rotateY(15deg) rotateX(-10deg) translateY(-6px) scale(1.04);
+  }
+  50% {
+    transform: rotateY(0deg) rotateX(12deg) translateY(-10px) scale(1.06);
+    box-shadow: 
+      0 18px 36px -2px rgba(0, 128, 255, 0.8),
+      0 0 35px rgba(0, 210, 255, 0.7),
+      inset 0 2px 6px rgba(255, 255, 255, 0.8);
+  }
+  75% {
+    transform: rotateY(-15deg) rotateX(-5deg) translateY(-4px) scale(1.03);
+  }
+}
+
+@keyframes electricPulseRing {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.9;
+    border-color: rgba(0, 210, 255, 0.8);
+  }
+  100% {
+    transform: scale(1.75);
+    opacity: 0;
+    border-color: rgba(0, 85, 255, 0);
+  }
+}
+
+/* ===== NEW ANIMATED FLOATING CYBER ORBS & PARTICLES BACKGROUND ===== */
+.hacker-cyber-card {
+  position: relative;
+  background: var(--bg-card, #ffffff);
+  border: 1px solid var(--border-color, rgba(0, 128, 255, 0.25));
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 
+    0 15px 35px -5px rgba(0, 0, 0, 0.18),
+    0 0 25px rgba(0, 128, 255, 0.12);
+}
+
+/* Floating Cyber Energy Orbs */
+.cyber-glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.55;
+}
+
+.orb-1 {
+  top: -20px;
+  left: -20px;
+  width: 180px;
+  height: 180px;
+  background: radial-gradient(circle, rgba(0, 210, 255, 0.6) 0%, rgba(0, 85, 255, 0.2) 70%, transparent 100%);
+  animation: orbFloat1 7s infinite ease-in-out alternate;
+}
+
+.orb-2 {
+  bottom: -30px;
+  right: -30px;
+  width: 220px;
+  height: 220px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.5) 0%, rgba(0, 128, 255, 0.2) 70%, transparent 100%);
+  animation: orbFloat2 9s infinite ease-in-out alternate;
+}
+
+[data-theme="dark"] .orb-1 {
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.5) 0%, rgba(6, 182, 212, 0.2) 70%, transparent 100%);
+}
+
+[data-theme="dark"] .orb-2 {
+  background: radial-gradient(circle, rgba(0, 140, 255, 0.5) 0%, rgba(139, 92, 246, 0.2) 70%, transparent 100%);
+}
+
+/* Cyber Floating Digital Particles */
+.cyber-particle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.7;
+}
+
+.p1 {
+  width: 6px;
+  height: 6px;
+  background: #00d2ff;
+  box-shadow: 0 0 10px #00d2ff;
+  left: 15%;
+  bottom: 10%;
+  animation: particleFloat 6s infinite ease-in-out;
+}
+
+.p2 {
+  width: 8px;
+  height: 8px;
+  background: #a855f7;
+  box-shadow: 0 0 12px #a855f7;
+  right: 20%;
+  bottom: 20%;
+  animation: particleFloat 8s infinite ease-in-out 2s;
+}
+
+.p3 {
+  width: 5px;
+  height: 5px;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  left: 45%;
+  bottom: 5%;
+  animation: particleFloat 7s infinite ease-in-out 4s;
+}
+
+.p4 {
+  width: 7px;
+  height: 7px;
+  background: #0080ff;
+  box-shadow: 0 0 10px #0080ff;
+  right: 40%;
+  top: 15%;
+  animation: particleFloat 9s infinite ease-in-out 1s;
+}
+
+/* Cyber Animated Wave Overlay */
+.hacker-wave-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.18;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(0, 128, 255, 0.15),
+    rgba(0, 128, 255, 0.15) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+  animation: cyberWaveShift 12s infinite linear;
+}
+
+[data-theme="dark"] .hacker-wave-overlay {
+  opacity: 0.15;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(16, 185, 129, 0.15),
+    rgba(16, 185, 129, 0.15) 12px,
+    transparent 12px,
+    transparent 24px
+  );
+}
+
+/* Keyframe Animations */
+@keyframes orbFloat1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, 30px) scale(1.15); }
+  100% { transform: translate(-20px, 20px) scale(0.95); }
+}
+
+@keyframes orbFloat2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-45px, -35px) scale(1.2); }
+  100% { transform: translate(25px, -15px) scale(0.9); }
+}
+
+@keyframes particleFloat {
+  0% { transform: translateY(0) scale(0.8); opacity: 0.2; }
+  50% { opacity: 0.9; transform: translateY(-40px) scale(1.2); }
+  100% { transform: translateY(-80px) scale(0.6); opacity: 0; }
+}
+
+@keyframes cyberWaveShift {
+  0% { background-position: 0 0; }
+  100% { background-position: 48px 0; }
+}
+
