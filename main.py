@@ -108,6 +108,11 @@ def route_bomber_page():
 def route_netflix_page():
     return send_from_directory('.', 'netflix.html')
 
+@app.route('/favicon.ico')
+@app.route('/favicon.svg')
+def route_favicon():
+    return send_from_directory('.', 'favicon.svg', mimetype='image/svg+xml')
+
 # ===== BACKEND API ENDPOINTS =====
 @app.route('/truecaller_proxy/<path:num>')
 def truecaller_api(num):
