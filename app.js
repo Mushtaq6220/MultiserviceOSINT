@@ -2090,3 +2090,56 @@ function toggleMobileMore(event) {
     submenu.classList.toggle('hidden');
   }
 }
+
+// ===== 3D INTERACTIVE CARD TILT & SPECULAR GLARE PHYSICS =====
+function init3DCardPhysics() {
+  const cards = document.querySelectorAll('.home-feature-card, .connect-card');
+  
+  cards.forEach(card => {
+    // Add specular glare layer if not present
+    if (!card.querySelector('.card-specular-glare')) {
+      const glare = document.createElement('div');
+      glare.className = 'card-specular-glare';
+      card.appendChild(glare);
+    }
+
+    card.addEventListener('mousemove', function(e) {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      
+      // Calculate rotation angles (max 10 deg)
+      const rotateX = ((y - centerY) / centerY) * -10;
+      const rotateY = ((x - centerX) / centerX) * 10;
+      
+      card.style.transform = `perspective(800px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(1.025, 1.025, 1.025)`;
+      
+      // Update dynamic specular reflection position
+      const glare = card.querySelector('.card-specular-glare');
+      if (glare) {
+        const percentX = (x / rect.width) * 100;
+        const percentY = (y / rect.height) * 100;
+        glare.style.background = `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(0, 180, 255, 0.22) 0%, transparent 65%)`;
+      }
+    });
+
+    card.addEventListener('mouseleave', function() {
+      card.style.transform = 'perspective(800px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+      const glare = card.querySelector('.card-specular-glare');
+      if (glare) {
+        glare.style.background = 'none';
+      }
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  init3DCardPhysics();
+});
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  init3DCardPhysics();
+}
